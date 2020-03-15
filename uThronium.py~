@@ -1,0 +1,3005 @@
+def sprint(x):
+    a = True
+    #a = False
+    if a:
+        print(x)
+def logged():
+    if details["user"] != None:
+        return True
+    else:
+        return False
+def closewin():
+    x = True
+    if x == True:
+        if details["user"] != None:
+            temp['shutdown'] = True
+            exit_save()
+        root.destroy()
+class Ball:
+    def __init__(self, canvas, paddle, color):
+        try:
+            self.canvas = canvas
+            self.paddle = paddle
+            self.id = canvas.create_oval(10, 10, 25, 25, fill=color)
+            self.canvas.move(self.id, 245, 100)
+            starts = [-3, -2, -1, 1, 2, 3]
+            shuffle(starts)
+            self.x = starts[0]
+            self.y = -3
+            self.canvas_height = self.canvas.winfo_height()
+            self.canvas_width = self.canvas.winfo_width()
+            self.hit_bottom = False
+            self.ti = time()
+        except Exception as err:
+            sprint('class.ball')
+            er("Error: {0}" .format(err))
+    def hit_paddle(self, pos):
+        try:
+            paddle_pos = self.canvas.coords(self.paddle.id)
+            if pos[2] >= paddle_pos[0] and pos[0] <= paddle_pos[2]:
+                if pos[3] >= paddle_pos[1] and pos[3] <= paddle_pos[3]:
+                    if time() - self.ti > 1:
+                        det["score"] = det["score"] + 1
+                        self.ti = time()
+                        sprint('hey')
+                        return True
+            return False
+        except Exception as err:
+            sprint('hit_paddle')
+            er("Error: {0}" .format(err))
+    def draw(self):
+        try:
+            self.canvas.move(self.id, self.x, self.y)
+            pos = self.canvas.coords(self.id)
+            if pos[1] <= 0:
+                self.y = 3
+            if pos[3] >= self.canvas_height:
+                self.hit_bottom = True
+            if self.hit_paddle(pos) == True:
+                self.y = -3
+            if pos[0] <= 0:
+                self.x = 3
+            if pos[2] >= self.canvas_width:
+                self.x = -3
+        except:
+            return None
+class Paddle:
+    def __init__(self, canvas, color):
+        try:
+            self.canvas = canvas
+            self.id = canvas.create_rectangle(0, 0, 100, 10, fill=color)
+            self.canvas.move(self.id, 200, 300)
+            self.x = 0
+            self.canvas_width = self.canvas.winfo_width()
+            self.canvas.bind_all('<KeyPress-Left>', self.turn_left)
+            self.canvas.bind_all('<KeyPress-Right>', self.turn_right)
+        except Exception as err:
+            er("Error: {0}" .format(err))
+    def turn_left(self, evt):
+        self.x = -2
+    def turn_right(self, evt):
+        self.x = 2
+    def draw(self):
+        try:
+            self.canvas.move(self.id, self.x, 0)
+            pos = self.canvas.coords(self.id)
+            if pos[0] <= 0:
+                self.x = 0
+                still = True
+            elif pos[2] >= self.canvas_width:
+                self.x = 0
+                still = True
+            else:
+                still = False
+            det["still"] = still
+        except:
+            return None
+def go(event):
+    try:
+        paddle = Paddle(canva, 'blue')
+        ball = Ball(canva, paddle, '#FF0000')
+        while 1:
+            score = det["score"]
+            if score == 5:
+                canva.create_text(250, 200, text="Congratulations! You have disabled the bomb!")
+                return None
+            if ball.hit_bottom == False:
+                ball.draw()
+                paddle.draw()
+            else:
+                if det["lose"] == True:
+                    pass
+                else:
+                    canva.create_text(250, 200, text="The bomb has hit the ground and exploded! You have killed many people!")
+                    det["lose"] = True
+            tk.update_idletasks()
+            tk.update()
+            sleep(0.01)
+    except:
+        pass
+def spy1():
+    try:
+        status('spy1')
+        statusbar("Spy Mode 1")
+        hey = messagebox.askyesno("Intro", "Play introduction? The introduction consists of 9 short on screen messages.")
+        if hey:
+            messagebox.showinfo("Intro - Briefing", "Briefing: You are in a concrete room with a bomb threatening to kill you and many innocent citizens!")
+            messagebox.showinfo("Intro - More About the Bomb", "The bomb is lined with a very strange bouncy material that bounces off the walls. The floor of the concrete room is actually metal, and it is being charged with magnetic energy!")
+            messagebox.showinfo("Intro - How The Bomb Goes Off", "Whoever programmed the bomb programmed it to explode when it detects magnetic energy nearby.")
+            messagebox.showinfo("Intro - Disable the Bomb", "You have nothing but a remote control jet-powered paddle. However, this is enough, because it is lined with plastic! The bouncy material shrinks on the inside when hit with plastic.")
+            messagebox.showinfo("Intro - More About Disabling The Bomb", "If you hit the material with the paddle 5 times, it will shrink enough to press the bomb's deactivate button. Remember, the material shrinks only on the inside, so on the outside it will look the same.")
+            messagebox.showinfo("Intro - Object of the Game", "The object of the game is to deactivate the bomb before it hits the magnetic floor and explodes.")
+            messagebox.showinfo("Intro - Controlling the Paddle", "You may move the paddle left and right with the left and right arrow keys on your keyboard.")
+            messagebox.showinfo("Intro - Scoring", "There is no scoring system in this game.")
+            messagebox.showinfo("Intro - GO!", "When you press Ok, this intro will close, the game will load, and then promptly start! You must click the game window before the game will recognize your keyboard buttons.")
+        global det
+        global tk
+        global canva
+        det = {
+            "still" : False,
+            "score" : 0,
+            "lose" : False
+            }
+        tk = Toplevel()
+        #The stuff below centers root
+        w = 500 #The value of the width
+        h = 400 #The value of the height of the window
+
+        # get screen width and height
+        ws = tk.winfo_screenwidth()#This value is the width of the screen
+        hs = tk.winfo_screenheight()#This is the height of the screen
+
+        # calculate position x, y
+        x = (ws/2) - (w/2)
+        y = (hs/2) - (h/2)
+
+        #This is responsible for setting the dimensions of the screen and where it is
+        #placed
+        tk.geometry('%dx%d+%d+%d' % (w, h, x, y))
+        tk.title("Spy Mode 1")
+
+        tk.resizable(0, 0)
+        canva = Canvas(tk, width=500, height=400, bd=0, highlightthickness=0)
+        canva.pack()
+        tk.update()
+        try:
+            go(None)
+        except:
+            pass
+        tk.mainloop()
+    except Exception as err:
+        sprint('manin')
+        er("Error: {0}" .format(err))
+class wargame1():
+    def __init__(self):
+        try:
+            status('wargame1')
+            statusbar('War Mode 1')
+            hey = messagebox.askyesno("Intro", "Play introduction? The introduction consists of 9 short on screen messages.")
+            if hey:
+                messagebox.showinfo("Intro - Briefing", "Briefing: You are driving a warship in the front lines where force-field protected missiles are threatening to shoot you down!")
+                messagebox.showinfo("Intro - More About Missiles", "The missiles will kill you if they hit your ship. Only some missiles have force fields. If a force field hits you, your plane will crash lands!")
+                messagebox.showinfo("Intro - Steering Your Ship", "You use ther right/left arrow keys on your keyboard to move the ship 90 degrees in the respective direction.")
+                messagebox.showinfo("Intro - Solar Technology", "Your ship and the enemy cannons are powered by solar panels. Unfortunately, on this planet the sun is getting gradually stronger every 3 seconds, giving both your ship and the missiles more power! However, the change is so small it may take a while to notice.")
+                messagebox.showinfo("Intro - More About Force Fields", "Do not worry, the solar changes do not affect the force fields around the missiles! Note: The enemy equipment is having problems, so the size of the fields may vary.")
+                messagebox.showinfo("Intro - Object of the Game", "The object of the game is to stay alive as long as possible before getting shot down.")
+                messagebox.showinfo("Intro - They Hit Me!", "If a missile (or its force field) hits you, your plane and the missile that hit you will turn blue.")
+                messagebox.showinfo("Intro - Scoring", "You will know your score when the game is finished.")
+                messagebox.showinfo("Intro - GO!", "When you press Ok, this intro will close, the game will load, and then promptly start!")
+            end = False
+            self.forward = True
+            self.right = False
+            self.left = False
+            self.down = False
+            turtle.setup(640, 480)
+            self.window = turtle.Screen()
+            turtle.write("Loading Game. Please Wait!", align=CENTER, font=('Times', 36))
+            setup = turtle.Turtle()
+            setup.up()
+            setup.speed(0)
+            setup.forward(320)
+            setup.left(90)
+            setup.down()
+            setup.forward(245)
+            setup.left(90)
+            setup.forward(645)
+            setup.left(90)
+            setup.forward(485)
+            setup.left(90)
+            setup.forward(645)
+            setup.left(90)
+            setup.forward(245)
+            setup.color('darkgreen')
+            self.window.title("War Mode 1")
+            a = turtle.Turtle()
+            b = turtle.Turtle()
+            c = turtle.Turtle()
+            d = turtle.Turtle()
+            e = turtle.Turtle()
+            f = turtle.Turtle()
+            g = turtle.Turtle()
+            h = turtle.Turtle()
+            i = turtle.Turtle()
+            j = turtle.Turtle()
+            k = turtle.Turtle()
+            l = turtle.Turtle()
+            m = turtle.Turtle()
+            n = turtle.Turtle()
+            o = turtle.Turtle()
+            p = turtle.Turtle()
+            q = turtle.Turtle()
+            r = turtle.Turtle()
+            s = turtle.Turtle()
+            self.ship = turtle.Turtle()
+            self.ship.shape('triangle')
+            turtlelist = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's']
+            for y in turtlelist:
+                exec(str(y) + str('.color("red")'))
+                exec(str(y) + str('.speed(0)'))
+                exec(str(y) + str('.shape(\'classic\')'))
+                exec(str(y) + str('.up()'))
+                exec(str(y) + str('.left(90)'))
+                exec(str(y) + str('.forward(220)'))
+                exec(str(y) + str('.left(90)'))
+                exec(str(y) + str('.forward(320)'))
+                exec(str(y) + str('.right(180)'))
+                x = randint(0, 640)
+                z = randint(0, 240)
+                exec(str(y) + str('.forward(x)'))
+                exec(str(y) + str('.right(90)'))
+                exec(str(y) + str('.forward(z)'))
+            self.ship.speed(0)
+            self.ship.up()
+            self.ship.right(90)
+            self.ship.forward(240)
+            self.ship.right(180)
+            self.ship.forward(30)
+            turtle.clear()
+            self.window.bgcolor('darkgreen')
+            self.window.onkey(self.shipright1, "Right")
+            self.window.onkey(self.shipleft1, "Left")
+            me = turtle.Turtle()
+            me.color('darkgreen')
+            self.window.listen()
+            t = time()
+            xy = time()
+            force = 25
+            speed = 10
+            while 1:
+                if time() - xy >= 3 and speed < 25:
+                    speed = speed + 1
+                    xy = time()
+                    sprint(speed)
+                if end == False:
+                    self.ship.forward(speed)
+                    for y in turtlelist:
+                       exec(str(y) + str('.forward(speed)'))
+                       if touching(self.ship.pos(), n.pos(), force) or touching(self.ship.pos(), o.pos(), force) or touching(self.ship.pos(), p.pos(), force) or touching(self.ship.pos(), q.pos(), force) or touching(self.ship.pos(), r.pos(), force) or touching(self.ship.pos(), s.pos(), force) or touching(self.ship.pos(), a.pos(), force) or touching(self.ship.pos(), b.pos(), force) or touching(self.ship.pos(), c.pos(), force) or touching(self.ship.pos(), d.pos(), force) or touching(self.ship.pos(), e.pos(), force) or touching(self.ship.pos(), f.pos(), force) or touching(self.ship.pos(), g.pos(), force) or touching(self.ship.pos(), h.pos(), force) or touching(self.ship.pos(), i.pos(), force) or touching(self.ship.pos(), j.pos(), force) or touching(self.ship.pos(), k.pos(), force) or touching(self.ship.pos(), l.pos(), force) or touching(self.ship.pos(), m.pos(), force): 
+                            s = turtle.Turtle()
+                            s.color('darkgreen')
+                            s.up()
+                            s.speed(0)
+                            s.right(90)
+                            x = wargameval
+                            s.setx(x[0])
+                            s.sety(x[1])
+                            s.color('blue')
+                            self.ship.color('blue')
+                            end = True
+                            t = time() - t
+                            t = int(t)
+                            turtle.write("Game Over! Your score is %s" % t, align=CENTER, font=('Times', 36))
+                            return None
+                if falling(a):
+                    a.sety(240.99999999999997)
+                    a.setx(randint(-320, 320))
+                if falling(b):
+                    b.sety(240.99999999999997)
+                    b.setx(randint(-320, 320))
+                if falling(c):
+                    c.sety(240.99999999999997)
+                    c.setx(randint(-320, 320))
+                if falling(d):
+                    d.sety(240.99999999999997)
+                    d.setx(randint(-320, 320))
+                if falling(e):
+                    e.sety(240.99999999999997)
+                    e.setx(randint(-320, 320))
+                if falling(f):
+                    f.sety(240.99999999999997)
+                    f.setx(randint(-320, 320))
+                if falling(g):
+                    g.sety(240.99999999999997)
+                    g.setx(randint(-320, 320))
+                if falling(h):
+                    h.sety(240.99999999999997)
+                    h.setx(randint(-320, 320))
+                if falling(i):
+                    i.sety(240.99999999999997)
+                    i.setx(randint(-320, 320))
+                if falling(j):
+                    j.sety(240.99999999999997)
+                    j.setx(randint(-320, 320))
+                if falling(k):
+                    k.sety(240.99999999999997)
+                    k.setx(randint(-320, 320))
+                if falling(l):
+                    l.sety(240.99999999999997)
+                    l.setx(randint(-320, 320))
+                if falling(m):
+                    m.sety(240.99999999999997)
+                    m.setx(randint(-320, 320))
+                if falling(n):
+                    n.sety(240.99999999999997)
+                    n.setx(randint(-320, 320))
+                if falling(o):
+                    o.sety(240.99999999999997)
+                    o.setx(randint(-320, 320))
+                if falling(p):
+                    p.sety(240.99999999999997)
+                    p.setx(randint(-320, 320))
+                if falling(q):
+                    q.sety(240.99999999999997)
+                    q.setx(randint(-320, 320))
+                if falling(r):
+                    r.sety(240.99999999999997)
+                    r.setx(randint(-320, 320))
+                if falling(s):
+                    s.sety(240.99999999999997)
+                    s.setx(randint(-320, 320))
+                if self.ship.pos()[0] > 320 and self.ship.heading() == 0:
+                    self.ship.setx(-320.99999999999997)
+                if self.ship.pos()[0] < -320 and self.ship.heading() == 180:
+                    self.ship.setx(320.99999999999997)
+                if self.ship.pos()[1] > 240 and self.ship.heading() == 90:
+                    self.ship.sety(-240.99999999999997)
+        except:
+            pass
+    def shipright1(self):
+        try:
+            self.ship.right(90)
+            if self.ship.heading() == 270:
+                self.ship.left(90)
+        except Exception as err:
+            er("Error: {0}" .format(err))
+    def shipleft1(self):
+        try:
+            self.ship.left(90)
+            if self.ship.heading() == 270:
+                self.ship.right(90)
+        except Exception as err:
+            er("Error: {0}" .format(err))
+class wargame2():
+    def __init__(self):
+        end = False
+        self.forward = True
+        self.right = False
+        self.left = False
+        self.down = False
+        self.window = turtle.Screen()
+        self.window.setup(640, 480)
+        turtle.bgpic(war)
+        turtle.write("Loading Game. Please Wait!", align=CENTER, font=('Times', 36))
+        setup = turtle.Turtle()
+        setup.up()
+        setup.speed(0)
+        setup.forward(320)
+        setup.left(90)
+        setup.down()
+        setup.forward(240)
+        setup.left(90)
+        setup.forward(640)
+        setup.left(90)
+        setup.forward(480)
+        setup.left(90)
+        setup.forward(640)
+        setup.left(90)
+        setup.forward(240)
+        setup.color('darkgreen')
+        setup.begin_fill()
+        setup.left(90)
+        setup.forward(640)
+        setup.left(90)
+        setup.forward(240)
+        setup.left(90)
+        setup.forward(640)
+        setup.left(90)
+        setup.forward(240)
+        setup.end_fill()
+        setup.left(90)
+        setup.forward(10)
+        setup.left(90)
+        setup.forward(50)
+        self.window.title("War Mode 2")
+        ship = turtle.Turtle()
+        ship.shape('triangle')
+        self.missile = turtle.Turtle()
+        ship.up()
+        self.missile.color('red')
+        ship.speed(0)
+        self.missile.speed(0)
+        ship.setx(-300)
+        ship.sety(200)
+        self.missile.right(90)
+        self.missile.color('red')
+        
+        
+def touching(a, b, r):
+    try:
+        global wargameval
+        x1 = a[0]
+        y1 = a[1]
+        x2 = b[0]
+        y2 = b[1]
+        x1 = x1 / r
+        y1 = y1 / r
+        x2 = x2 / r
+        y2 = y2 / r
+        x1 = int(x1)
+        y1 = int(y1)
+        x2 = int(x2)
+        y2 = int(y2)
+        if x1 == x2 and y1 == y2:
+            wargameval = b
+            return True
+        else:
+            return False
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def falling(c):
+    try:
+        a = c.pos()
+        b = c.heading()
+        if b == 270:
+            x = a[1]
+            x = abs(x)
+            if x % 1 == 0:
+                return True
+            else:
+                return False
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def er(x):
+    global heythere
+    try:
+        a = debug
+        b = details
+        c = temp
+        d = heythere
+    except:
+        messagebox.showerror("Premature Error", "A premature error occured. %s" % x)
+        sys.exit()
+    a = None
+    b = None
+    c = None
+    d = None
+    if uname()[0] == 'Linux':
+        user = getuser()
+        user = str('/home/') + str(user) + str('/Public/uthronium/')
+    else:
+        if debug["os"] == True:
+            user = "C:\\Documents and settings\\all users\\Documents\\uthronium\\"
+        else:
+            user = "C:\\users\\public\\Documents\\uthronium\\"
+    if debug["status"] == "cheat.enter":
+        messagebox.showerror("Error", "Cheat code not found.")
+        cheat()
+    elif debug["status"] == 'exsave':
+        pass
+    elif debug["status"] == "m17.help":
+        messagebox.showerror("Error", "You did not enter anything!")
+        murphy(17)
+    elif debug["status"] == 'load':
+        pass
+    elif debug["status"] == 'donate2':
+        messagebox.showerror("Error", "Kingdom not found.")
+        donat()
+    elif heythere >= 2:
+        messagebox.showerror("CRITICAL ERROR", "A CRITICAL ERROR HAS OCCURED. PLEASE SEND DATA ON WHAT YOU WERE DOING TO THE CORRECT PERSONS! %s" % x)
+        root.destroy()
+    else:
+        heythere = heythere + 1
+        statusbar(x)
+        colorpass = details["colorpass"]
+        pas = details["pass"]
+        details["colorpass"] = "Not included in this report"
+        details["pass"] = "Not included in this report"
+        dev = open(str(user) + str("debug.txt"))
+        devr = str(user) + str("debug.txt")
+        dev = dev.read()
+        deb = open(str(user) + str("debug.txt"), 'w')
+        deb.write(dev)
+        deb.write('''
+''')
+        deb.write(str(asctime()))
+        deb.write('''
+''')
+        deb.write(x)
+        deb.write('''
+''')
+        deb.write(str(details))
+        deb.write('''
+''')
+        deb.write(str(temp))
+        deb.write('''
+''')
+        deb.write(str(debug))
+        deb.write('''
+''')
+        deb.write('An error has been encountered. See above information.')
+        messagebox.showerror("Error", "An error has been encountered. Details are located in \"%s\" file. Please send this to emcpark@gmail.com. %s " % (devr, x))
+        deb.write('''
+''')
+        deb.write('''
+''')
+        deb.close()
+        sprint(x)
+        details["pass"] = pas
+        details["colorpass"] = colorpass
+        if details["user"] != None:
+            exit_save2()
+        root.destroy()
+            
+def setup():
+    global setu
+    setu = True
+    try:
+        if uname()[0] != 'Linux' and uname()[0] != 'Windows':
+            messagebox.showerror("Operating System Not Supported", "uThronium can only be run on Windows and Linux. Your operating system is %s." % uname()[0])
+            setu = False
+        sprint('YEAAAAAAAAA')
+        status('setup')
+        if uname()[4] == 'AMD64':
+            debug["bit"] = False
+        else:
+            debug["bit"] = True
+        if uname()[2] == 'xp' or uname()[2] == 'Xp' or uname()[2] == 'XP':
+            debug["os"] = True
+        else:
+            debug["os"] = False
+    except Exception as err:
+        er("Error: {0}" .format(err))
+    try:
+        if debug["os"] == True:
+            me = open("C:\\Documents and settings\\all users\\Documents\\uthronium\\debug.txt")
+        else:
+            me = open("C:\\users\\public\\Documents\\uthronium\\debug.txt")
+    except:
+        setupUbuntu()
+def setupUbuntu():
+    try:
+        status('setup.ubuntu')
+        if uname()[4] == 'AMD64':
+            debug["bit"] = False
+        else:
+            debug["bit"] = True
+    except Exception as err:
+        er("Error: {0}" .format(err))
+    if uname()[0] == 'Linux':
+        try:
+            open(str('/home/') + str(getuser()) + str('/Public/uthronium/debug.txt'))
+        except:
+            setup2()
+def setup2():
+    if uname()[0] != 'Linux':
+        try:
+            status('setup2')
+            if debug["bit"] == True:
+                z = 'C:\\program files\\uthronium\\'
+            else:
+                z = 'C:\\program files (x86)\\uthronium\\'
+            exec(str('y = open(') + str(z) + str('protect.dat)'))
+            y = y.read()
+            if debug["os"] == True:
+                makedirs("C:\\Documents and settings\\all users\\Documents\\uthronium")
+                me2 = open("C:\\Documents and settings\\all users\\Documents\\uthronium\\debug.txt", 'w')
+            else:
+                makedirs("C:\\users\\public\\Documents\\uthronium")
+                me2 = open("C:\\users\\public\\Documents\\uthronium\\debug.txt", 'w')
+            me2.close()
+        except Exception as err:
+            er("Error: {0}" .format(err))
+    else:
+        status('setup2')
+        makedirs(str('/home/') + str(getuser()) + str('/Public/uthronium'))
+        me2 = open(str('/home/') + str(getuser()) + str('/Public/uthronium/debug.txt'), 'w')
+        me2.close()
+def goagain():
+    try:
+        status('goagain')
+        a = open("C:\Documents and Settings\All Users\Documents\\debug.txt")
+        return a
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def scramble(x):
+    status('scramble')
+    try:
+        a = ''
+        if 1 == 2:
+            pass
+        else:
+            y = len(x)
+            sprint(y)
+            for z in range(0, y):
+                if x[z] == 'a':
+                    a = a + 't'
+                elif x[z] == 'b':
+                    a = a + '0'
+                elif x[z] == 'c':
+                    a = a + 'a'
+                elif x[z] == 'd':
+                    a = a + 'c'
+                elif x[z] == 'e':
+                    a = a + 'd'
+                elif x[z] == 'f':
+                    a = a + 'x'
+                elif x[z] == 'g':
+                    a = a + 'u'
+                elif x[z] == 'h':
+                    a = a + 's'
+                elif x[z] == 'i':
+                    a = a + 'j'
+                elif x[z] == 'j':
+                    a = a + 'r'
+                elif x[z] == 'k':
+                    a = a + 'n'
+                elif x[z] == 'l':
+                    a = a + 'b'
+                elif x[z] == 'm':
+                    a = a + 'z'
+                elif x[z] == 'n':
+                    a = a + 'k'
+                elif x[z] == 'o':
+                    a = a + 'm'
+                elif x[z] == 'p':
+                    a = a + 'i'
+                elif x[z] == 'q':
+                    a = a + 'l'
+                elif x[z] == 'r':
+                    a = a + 'q'
+                elif x[z] == 's':
+                    a = a + 'o'
+                elif x[z] == 't':
+                    a = a + 'v'
+                elif x[z] == 'u':
+                    a = a + 'e'
+                elif x[z] == 'v':
+                    a = a + 'h'
+                elif x[z] == 'w':
+                    a = a + 'f'
+                elif x[z] == 'x':
+                    a = a + 'w'
+                elif x[z] == 'y':
+                    a = a + 'y'
+                elif x[z] == 'z':
+                    a = a + 'g'
+                elif x[z] == 'A':
+                    a = a + 'T'
+                elif x[z] == 'B':
+                    a = a + ')'
+                elif x[z] == 'C':
+                    a = a + 'A'
+                elif x[z] == 'D':
+                    a = a + 'C'
+                elif x[z] == 'E':
+                    a = a + 'D'
+                elif x[z] == 'F':
+                    a = a + 'X'
+                elif x[z] == 'G':
+                    a = a + 'U'
+                elif x[z] == 'H':
+                    a = a + 'S'
+                elif x[z] == 'I':
+                    a = a + 'J'
+                elif x[z] == 'J':
+                    a = a + 'R'
+                elif x[z] == 'K':
+                    a = a + 'N'
+                elif x[z] == 'L':
+                    a = a + 'B'
+                elif x[z] == 'M':
+                    a = a + 'Z'
+                elif x[z] == 'N':
+                    a = a + 'K'
+                elif x[z] == 'O':
+                    a = a + 'M'
+                elif x[z] == 'P':
+                    a = a + 'I'
+                elif x[z] == 'Q':
+                    a = a + 'L'
+                elif x[z] == 'R':
+                    a = a + 'Q'
+                elif x[z] == 'S':
+                    a = a + 'O'
+                elif x[z] == 'T':
+                    a = a + 'V'
+                elif x[z] == 'U':
+                    a = a + 'E'
+                elif x[z] == 'V':
+                    a = a + 'H'
+                elif x[z] == 'W':
+                    a = a + 'F'
+                elif x[z] == 'X':
+                    a = a + 'W'
+                elif x[z] == 'Y':
+                    a = a + 'Y'
+                elif x[z] == 'Z':
+                    a = a + 'G'
+                elif x[z] == ' ':
+                    a = a + '2'
+                elif x[z] == '0':
+                    a = a + ' '
+                elif x[z] == '1':
+                    a = a + '('
+                elif x[z] == '2':
+                    a = a + '*'
+                elif x[z] == '3':
+                    a = a + '&'
+                elif x[z] == '4':
+                    a = a + '^'
+                elif x[z] == '5':
+                    a = a + '%'
+                elif x[z] == '6':
+                    a = a + '$'
+                elif x[z] == '7':
+                    a = a + '#'
+                elif x[z] == '8':
+                    a = a + '@'
+                elif x[z] == '9':
+                    a = a + '!'
+                elif x[z] == ' ':
+                    a = a + '/'
+                else:
+                    a = a + x[z]
+            return a
+    except:
+        return x
+def mone(x):
+    try:
+        s = debug["status"]
+        status('money')
+        statusbar('Processing Money Transaction')
+        sprint(str('Transaction: Add ') + str(x))
+        details["money"] = x + details["money"]
+        sprint(details["money"])
+        if temp["room"] == True:
+            canvas.itemconfig(temp["money"], text="", font=('Times', 14))
+            canvas.itemconfig(temp["money"], text=details["money"], font=('Times', 14))
+        else:
+            drawroomt(None)
+        status(s)
+        debt()
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def unscramble(x):
+    status('unscramble')
+    try:
+        a = ''
+        if 1 == 1:
+            y = len(x)
+            for z in range(0, y):
+                if x[z] == 't':
+                    a = a + 'a'
+                elif x[z] == '/':
+                    a = a + ' '
+                elif x[z] == '0':
+                    a = a + 'b'
+                elif x[z] == 'a':
+                    a = a + 'c'
+                elif x[z] == 'c':
+                    a = a + 'd'
+                elif x[z] == 'd':
+                    a = a + 'e'
+                elif x[z] == 'x':
+                    a = a + 'f'
+                elif x[z] == 'u':
+                    a = a + 'g'
+                elif x[z] == 's':
+                    a = a + 'h'
+                elif x[z] == 'j':
+                    a = a + 'i'
+                elif x[z] == 'r':
+                    a = a + 'j'
+                elif x[z] == 'n':
+                    a = a + 'k'
+                elif x[z] == 'b':
+                    a = a + 'l'
+                elif x[z] == 'z':
+                    a = a + 'm'
+                elif x[z] == 'k':
+                    a = a + 'n'
+                elif x[z] == 'm':
+                    a = a + 'o'
+                elif x[z] == 'i':
+                    a = a + 'p'
+                elif x[z] == 'l':
+                    a = a + 'q'
+                elif x[z] == 'q':
+                    a = a + 'r'
+                elif x[z] == 'o':
+                    a = a + 's'
+                elif x[z] == 'v':
+                    a = a + 't'
+                elif x[z] == 'e':
+                    a = a + 'u'
+                elif x[z] == 'h':
+                    a = a + 'v'
+                elif x[z] == 'f':
+                    a = a + 'w'
+                elif x[z] == 'w':
+                    a = a + 'x'
+                elif x[z] == 'y':
+                    a = a + 'y'
+                elif x[z] == 'g':
+                    a = a + 'z'
+                elif x[z] == 'T':
+                    a = a + 'A'
+                elif x[z] == ')':
+                    a = a + 'B'
+                elif x[z] == 'A':
+                    a = a + 'C'
+                elif x[z] == 'C':
+                    a = a + 'D'
+                elif x[z] == 'D':
+                    a = a + 'E'
+                elif x[z] == 'X':
+                    a = a + 'F'
+                elif x[z] == 'U':
+                    a = a + 'G'
+                elif x[z] == 'S':
+                    a = a + 'H'
+                elif x[z] == 'J':
+                    a = a + 'I'
+                elif x[z] == 'R':
+                    a = a + 'J'
+                elif x[z] == 'N':
+                    a = a + 'K'
+                elif x[z] == 'B':
+                    a = a + 'L'
+                elif x[z] == 'Z':
+                    a = a + 'M'
+                elif x[z] == 'K':
+                    a = a + 'N'
+                elif x[z] == 'M':
+                    a = a + 'O'
+                elif x[z] == 'I':
+                    a = a + 'P'
+                elif x[z] == 'L':
+                    a = a + 'Q'
+                elif x[z] == 'Q':
+                    a = a + 'R'
+                elif x[z] == 'O':
+                    a = a + 'S'
+                elif x[z] == 'V':
+                    a = a + 'T'
+                elif x[z] == 'E':
+                    a = a + 'U'
+                elif x[z] == 'H':
+                    a = a + 'V'
+                elif x[z] == 'F':
+                    a = a + 'W'
+                elif x[z] == 'W':
+                    a = a + 'X'
+                elif x[z] == 'Y':
+                    a = a + 'Y'
+                elif x[z] == 'G':
+                    a = a + 'Z'
+                elif x[z] == ' ':
+                    a = a + '0'
+                elif x[z] == '(':
+                    a = a + '1'
+                elif x[z] == '*':
+                    a = a + '2'
+                elif x[z] == '&':
+                    a = a + '3'
+                elif x[z] == '^':
+                    a = a + '4'
+                elif x[z] == '%':
+                    a = a + '5'
+                elif x[z] == '$':
+                    a = a + '6'
+                elif x[z] == '#':
+                    a = a + '7'
+                elif x[z] == '@':
+                    a = a + '8'
+                elif x[z] == '!':
+                    a = a + '9'
+                elif x[z] == '2':
+                    a = a + ' '
+                else:
+                    a = a + x[z]
+            return a
+    except:
+        return x
+def statusbar(x):
+    try:
+        sprint(str('Status Bar is now:') + x)
+        statusb.config(text=x)
+        statusb.pack(side=BOTTOM, fill=X)
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def status(x):
+    try:
+        sprint(str('Status of the program:') + x)
+        debug["status"] = x
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def statmurph(x):
+    statusbar(str('What\'s Up, Murphy? #') + str(x))
+def murphy(x):
+    if debug["status"] == 'color':
+        messagebox.showerror("ENTER PASSWORD", "ENTER YOUR PASSWORD FIRST!")
+    try:
+        abcd = False
+        if debug["status"] == 'colorpass':
+            abcd = True
+        if details["user"] == None or abcd == True:
+            messagebox.showerror("Account Required", "An account is required for this feature.")
+        else:
+            status("m")
+            money = details["money"]
+            if x == False:
+                x = randint(1, 60)
+                #sprint(x)
+            me = details["murph"]
+            if me == x:
+                murphy(False)
+                return None
+            else:
+                details["murph"] = x
+            if x == 1:
+                statusbar("What's Up, Murphy? #1")
+                status("m1")
+                murphy_yesno("The country of Fiji has declared war on you! They want 100 miles of land. Would you just like to give it to them? If not, we must go to war.", 10000000000, "You have saved the country from war. Fiji is giving you 10 billion for the land.", True, -10000000000, "You have asked for war. This war will be expensive. You must pay 10b.", False)
+            elif x == 2:
+                statusbar("What's Up, Murphy? #2")
+                status("m2")
+                if money < 0:
+                    murphy_yesno("The country is in debt and the poor are hungry. Would you like to donate 10 thousand dollars to the food pantry?", -10000, "Congratulations. You are helping the poor. However, you have more debt.", False, 0, "Pershaps its good you didn't indulge in more debt. But the people are still hungry.", False)
+                else:
+                    murphy(3)
+            elif x == 3:
+                statusbar("What's Up, Murphy? #3")
+                status("m3")
+                y = messagebox.askyesno("What's Up, Murphy?", "The police have just caught the developer of a major computer virus. However, the suspect is your cousin! Would you like to capture him anyway?")
+                if y == True:
+                    mone(-300)
+                    messagebox.showwarning("What's Up, Murphy?", "The people are happy now because the cousin is in jail. But your family is angry! They have stolen 300 dollars from you!")
+                else:
+                    y = messagebox.askyesno("What's Up, Muprhy?", "Your family is happy because your cousin is free. But the people are furious! Some of them received the virus and their computers are now destroyed. They have hired an assasain to kill you! Would you like to place your bodyguards on high alert?")
+                    if y == True:
+                        messagebox.showinfo("What's Up, Murphy?", "Good choice. Your bodyguards have killed the assasain and it doesn't look like more are coming.")
+                    else:
+                        details["kill1"] = True
+                        messagebox.showwarning("What's Up, Muprhy?", "Very well. But your life is now in danger!")
+            elif x == 4:
+                statusbar("What's Up, Murphy? #4")
+                status("m4")
+                murphy_info("The people have sent a gift to express their gratitude towards you as Ruler. The gift is 75 thousand dollars!", 75000, True)
+            elif x == 5:
+                statusbar("What's Up, Murphy? #5")
+                status("m5")
+                murphy_yesno("There is a fire in the palace! Your stuff is burning up. However, the chef responsible will soon have the fire out. Would you like to activate the sprinklers anyway?", -10000, "The fire is put out. Unfortunately, the sprinkler system destroyed ten thousand dollars!", False, -20000, "Yay! The chef put the fire out. However, some of the fire spread to the money vault, which is next to the kitchen. Twenty thousand dollars were burned!", False)
+            elif x == 6:
+                statusbar("What's Up, Murphy? #6")
+                status("m6")
+                me = messagebox.askyesno("What's Up, Murphy?", "It is the end of the year, and I want a bonus. May I have it?")
+                if me == False:
+                    messagebox.showinfo("What's Up, Murphy?", "Very well, sir.")
+                elif me == True:
+                    me2 = simpledialog.askfloat("What's Up, Murphy?", "How much is my bonus?")
+                    me2 = int(me2)
+                    if me2 < 0:
+                        messagebox.showwarning("What's Up, Murphy?", "Sorry King, it doesn't work that way!")
+                    else:
+                        details["money"] = details["money"] - me2
+                        messagebox.showinfo("What's Up, Murphy?", "Thank you, sir!")
+            elif x == 7:
+                statusbar("What's Up, Murphy? #7")
+                status("m7")
+                murphy_info("Your uncle, Yuck Hoo, has died. In his will, he left 200 thousand dollars to you!", 200000, True)
+            elif x == 8:
+                statusbar("What's Up, Murphy? #8")
+                status("m8")
+                murphy_yesno("A storm is going to strike your palace. Would you like to buy a generator for the throne room?", -2000, "The generator will be expensive. You must pay 2 thousand dollars.", False, 0, "Good news, you saved money by not buying a generator. Bad news, the power's out!", False)
+            elif x == 9:
+                statusbar("What's Up, Murphy? #9")
+                status("m9")
+                murphy_yesno("You have received a gift of 1 million dollars from Germany. Would you like to invest it in the stock market? If not, I will put it in the vault.", 2000000, "The stock market is in your favor. Your 1 million turned into 2 million!", True, 1000000, "Ok. Your money is being added to the vault.", True)
+            elif x == 10:
+                status("m10")
+                statusbar("What's Up, Murphy? #10")
+                murphy_yesno("The day is gloomy and the people are bored. Would you like to set up the county fair today?", -5000, "It cost 5 thousand dollars to set up the county fair.", False, 200, "Well, it is gloomy today anyway. But some of the kids are disappointed. They've vandalized your palace. Repairs cost 200 dollars.", False)
+            elif x == 11:
+                status("m11")
+                statusbar("What's Up, Murphy? #11")
+                murphy_yesno("A major malware program has taken the internet offline! (hard to believe). The malware has a suicide chain which will destroy itself in a week. Would you like to hire Bill Gates and friends to repair the internet anyway?", -3000000000, "Bill Gates and Microsoft TM are charging 3 billion dollars for repairing the internet.", False, -2000000, "Well, you will save a lot of money this way. However, the people are very upset. They are threatening you with lawsuits! Your royal court is asking for 2 million dollars to appease them.", False)
+            elif x == 12:
+                status("m12")
+                statusbar("What's Up, Murphy? #12")
+                murphy_yesno("A TV producer has offered to make a commercial advertising your country. Will you accept?", 5000000, "The commercial is a large success! You have made 5 million dollars!", True, 0, "Oh, man! The company offered California the commercial and they've made 5 million dollars!", False)
+            elif x == 13:
+                status("m13")
+                statusbar("What's Up, Murphy? #13")
+                murphy_info("A submarine crew has discovered a 400 year old pirate ship! You have received some of the booty.", 1000000, True)
+            elif x == 14:
+                status("m14")
+                statusbar("What's Up, Murphy? #14")
+                y = messagebox.askyesno("What's Up, Murphy?", "Your palace's carbon manoxide alarm has broken! Would you like to fix it?")
+                if y == True:
+                    details["money"] = details["money"] - 500
+                    messagebox.showwarning("What's Up, Murphy?", "Good choice! However, the systems cost 500 dollars.")
+                elif y == False:
+                    details["kill1"] = True
+                    messagebox.showwarning("What's Up, Murphy?", "Well, if you say so. But without an alarm, we will not know if there is a carbon manoxide leak, which would kill us.")
+            elif x == 15:
+                statusbar("What's Up, Murphy? #15")
+                status("m15")
+                murphy_yesno("The main computer system in the palace has crashed. You could replace the system...it's old, anyway. If not you can repair the computer system. So would you like to replace it?", -15000, "Good choice. I was getting tired of Windows XP anyway. However, the new system cost 15 thousand dollars!", False, -700, "Ok. The computer repair man is charging 700 dollars. He says royal computers \"take more time\".", False)
+            elif x == 16:
+                statusbar("What's Up, Murphy? #16")
+                status("m16")
+                murphy_yesno("It is Easter today. Would you like to go to church?", -1200, "Good choice. However, the cost of your security will be 1200 dollars.", False, -700, "Pope Francis isn't very happy about this. He has started a riot outside your palace! Police have stopped it, but you now owe them 700 dollars.", False)
+            elif x == 17:
+                statusbar("What's Up, Murphy? #17")
+                status("m17")
+                y = simpledialog.askfloat("What's Up, Murphy?", '''
+You have just won a war with Mexico! You are
+entitled to some money (maximum 100 billion).
+How much would you like to take from Mexico?''')
+                status("m17.help")
+                if y > 100000000000:
+                    messagebox.showwarning("What's Up, Murphy?", "Mexico does not agree. The war is back on!")
+                elif y < 0:
+                    messagebox.showerror("Hey!", "Why on earth did you do that? You're supposed to take money, not give money!")
+                    murphy(17)
+                else:
+                    mone(y)
+                    messagebox.showinfo("What's Up, Murphy?", "Mexico agrees. The money is being added to your vault.")
+            elif x == 18:
+                statusbar("What's Up, Murphy? #18")
+                status("m18")
+                murphy_info("A project you invested in has gone bankrupt. You have lost 200 thousand dollars.", -200000, False)
+            elif x == 19:
+                statusbar("What's Up, Murphy? #19")
+                status("m19")
+                murphy_info("You have a lot of money. Why don't you donate to another user?", 0, True)
+            elif x == 20:
+                statusbar("What's Up, Murphy? #20")
+                status("m20")
+                murphy_info("Not really much going on right now.", 0, True)
+            elif x == 21:
+                statusbar("What's Up, Murphy? #21")
+                status("m21")
+                murphy_info("Zzz...Zzz...Zzz...", 0, True)
+            elif x == 22:
+                status("m22")
+                statusbar("What's Up, Murphy? #22")
+                murphy_yesno("The USA wants to make a deal with you. They will give you 3 billion dollars if you advertise their product on TV. Will you accept?", 3000000000, "Good choice. The 3 billion dollars will be added to your vault.", True, 0, "Well, I don't see why you did that, but ok.]]]Well, I don't see why you did that, but ok.", True)
+            elif x == 23:
+                status("m23")
+                statusbar("What's Up, Murphy? #23")
+                murphy_yesno("Microsoft TM wants you to sponsor its new project, Windows Blue. Do you accept?", 500000, "Ok. For sponsoring the project, you get royalty. However, Windows Blue isn't coming out for a while, so Microsoft gave you 500 thousand dollars in advance.", True, 0, "Ok. I'm sure Microsoft TM will find someone else.", True)
+            elif x == 24:
+                status("m24")
+                statusbar("What's Up, Murphy? #24")
+                murphy_yesno("Disney wants to make a movie about you. Do you accept?", 5000000, "Disney has given you a share of the profits of the movie. You have received 5 million dollars!", True, 0, "Well, the film crews would be a bother anyway. And they'd probably stretch the truth.", True)
+            elif x == 25:
+                if details["money"] < 1:
+                    murphy(26)
+                    return None
+                status("m25")
+                statusbar("What's Up, Murphy? #25")
+                y = simpledialog.askfloat("What's Up, Murphy?", '''
+It is time to collect monthly taxes in one of your
+cities. The population of this city is 25, 000.
+How much would you like to charge each citizen?''')
+                if y > 500:
+                    messagebox.showwarning("What's Up, Murphy?", "The people are angry at you for charging so high a tax! They are revolting! They have broken into your palace and stolen half of your money!")
+                    details["money"] = details["money"] / 2
+                else:
+                    mone(y * 25000)
+                    messagebox.showinfo("What's Up, Murphy?", "Ok.")
+            elif x == 26:
+                status('m26')
+                statmurph(26)
+                murphy_yesno("A hurricane is coming! Would you like to evacuate part of the country?", -1000000, "Good choice. However, this cost 1 million dollars.", False, -3000000, "The hurricane caused a lot of damage. Repairs cost 3 million dollars.", False)
+            elif x == 27:
+                status('m27')
+                statmurph(27)
+                y = messagebox.askyesno("What's Up, Murphy?", "There is a flood in the streets and the water is in your palace! You can run out of the palace. Or, swim out of the palace. Would you like to run out?")
+                if y == True:
+                    mone(-200000)
+                    messagebox.showwarning("What's Up, Murphy?", "Good choice! However, your palace was damaged. Repairs cost 200 thousand dollars.")
+                elif y == False:
+                    messagebox.showwarning("What's Up, Murphy?", "The waters have swept you away! You have been hit by debris! You die unless you have another life.")
+                    exit_save_death()
+            elif x == 28:
+                status('m28')
+                statmurph(28)
+                murphy_yesno("A virus has been found on your computer system. Would you like to remove it?", -100, "This is a complex virus. Removal will cost 100 dollars.", False, -15000, "The virus destroyed your system! A new one cost 15 thousand dollars.", False)
+            elif x == 29:
+                status('m29')
+                statmurph(29)
+                murphy_yesno("We haven't had a royal party in a while. Would you like a royal party?", -2000, "The royal party cost 2 thousand dollars to set up.", False, 0, "Ok.", True)
+            elif x == 30:
+                status('m30')
+                statmurph(30)
+                murphy_yesno("The sewage department went on strike! They want 40 thousand dollars! Will you give it to them?", -40000, "Good choice.", True, 0, "Ok. But what about my toilet?", True)
+            elif x == 31:
+                status('m31')
+                statmurph(31)
+                y = messagebox.askyesno("What's Up, Murphy?", "There is a plague spreading throughout your kingdom. Would you like to build more hospitals?")
+                if y == True:
+                    mone(-10000000)
+                    messagebox.showwarning("What's Up, Murphy?", "Very good. However, this cost 10 million dollars.")
+                else:
+                    z = randint(0, 101)
+                    if z < 51:
+                        messagebox.showwarnning("What's Up, Murphy?", "The people are very angry about all of this! You must flee the country for a while.")
+                        exit_save2()
+                    else:
+                        mone(-50000000)
+                        messagebox.showwarning("What's Up, Murphy?", "OH NO! YOU HAVE CAUGHT THE PLAGUE! You are being rushed to a hospital in the United States since all the hospitals in your kingdom our full. This cost 50 million dollars!")
+            elif x == 32:
+                status('m32')
+                statmurph(32)
+                murphy_3opt('''Budget Alert - We're spending more money than
+we're making! At this rate we'll soon be in
+debt. Option 1: Raise taxes in the small towns
+(their taxes are cheap). Option 2: Reduce spending
+on transportation systems. Option 3: Do nothing at
+all! Type 1, 2, or 3.''', -2000, "Good choice. However, some townspeople are unhappy and have started a revolt by burning picures of you! This is highly illegal, and they must be arrested. Your police have demanded 2 thousand dollars.", False, -1000, "Ok. However, there is now more traffic around town. Which means more accidents! Old traffic lights are being upgraded. These cost 1 thousand dollars.", False, -1000000000, "Oh boy! We're losing money rappidly! In fac, we've lost 1 billion dollars!", False)
+            elif x == 33:
+                status('m33')
+                statmurph(33)
+                murphy_info("GIVE ME SOME PRIVACY! I'm taking a dump here!", 0, True)
+            elif x == 34:
+                status('m34')
+                statmurph(34)
+                murphy_info("Hey King! Just thought I'd let you know that...I QUIT! APRIL FOOLS!!", 0, True)
+            elif x == 35:
+                status('m35')
+                statmurph(35)
+                murphy_yesno("There is someone at the door of your palace. He is wearing a ski mask. I don't blame him...it's cold out there. Then again, he could be an assassin! Would you like to let him in?", -20000000, "OH NO! HE'S BROKEN INTO THE VAULT! HE'S STOLEN 20 MILLION DOLLARS!", False, 0, "Good choice.", True)
+            elif x == 36:
+                status('m36')
+                statmurph(36)
+                murphy_yesno("You have no more waffles and bacon. And that was your only breakfast. Would you like to buy more?", -30, "You have bought your waffles and bacon. But, your freezer is so full that we can't fit them in! And your breakfast cost 30 dollars!", False, 0, "You may do as you wish. But your stomach is so angry that you just threw up!", False)
+            elif x == 37:
+                status('m37')
+                statmurph(37)
+                murphy_yesno("A nuclear reactor power plant in your kingdom is suffering a meltdown! You can keep it running anyway. But would you like to shut it down?", -650000, "Good choice. However, we need a new power plant to keep up with energy demand. This will cost 650 thousand dollars.", False, -1000000000, "OH NO! THE REACTOR IS LEAKING! YOUR KINGDOM IS EXPOSED TO RADIATION! You must evacuate part of your country and close off the infected area, which will cost 1 billion dollars!", False)
+            elif x == 38:
+                status('m38')
+                statmurph(38)
+                y = messagebox.askyesno("What's Up, Murphy?", "There is much pollution in your kingdom. Would you like to plant more trees?")
+                if y == True:
+                    z = simpledialog.askfloat("What's Up, Murphy?", '''How many trees would you like to plant?
+Each tree costs 100 dollars.''')
+                    if z < 0:
+                        messagebox.showerror("What's Up, Murphy?", "You cannot chop down trees!")
+                    else:
+                        z = z * 100
+                        z2 = z
+                        z = z * -1
+                        mone(z)
+                        messagebox.showinfo("What's Up, Murphy?", "Ok. The trees have been planted. It cost %s dollars." % z2)
+                else:
+                    messagebox.showwarning("What's Up, Murphy?", "OK. But the air is getting (gulp) hard to (gulp) breathe! (gulp)")
+            elif x == 39:
+                status('m39')
+                statmurph(39)
+                murphy_info("Your kingdom has been named as having the lowest number of government scandals! This is a big honor.", 0, True)
+            elif x == 40:
+                status('m40')
+                statmurph(40)
+                murphy_yesno("Psy, writer of \"Gangnam Style\", has offered an invitation to visit him. Will you accept?", -400, "Ok. But your security cost 400 bucks.", False, 0, "Uh-oh. Psy is not happy about this. He has written a song making fun of the way your fingernail looks pink.", False)
+            elif x == 41:
+                status('m41')
+                statmurph(41)
+                murphy_yesno("You have been invited to host a weekly talk show on a famous radio station. Do you accept?", 1000000, "Ok. Because of this talk show, many people found out about your country and have come to visit. You have made 1 million dollars.", True, 0, "Ok. You're busy this week anyway...we have to negotiate that treaty with the Canadians about claims to the Bering Sea.", True)
+            elif x == 42:
+                status('m42')
+                statmurph(42)
+                murphy_3opt('''Garbage is in abundant
+supply in your kingdom,
+but there's not enough
+systems to dispose of it!
+Option 1: Dig a landfill.
+Option 2: Ship it to our
+neighbors. Option 3: Turn
+it into electricity. Type
+1, 2 or 3.", -100000, "Ok. It cost 100 thousand dollars to dig up a landfill.''', True, -50000, "Ok. Some garbage has been removed. However, this cost 50 thousand dollars.", False, -75000, "Cool! However, the power plant cost 75 thousand dollars to set up.", False)
+            elif x == 43:
+                status('m43')
+                statmurph(43)
+                murphy_info("It's a slow day, king. The only exciting thing going on around here is listening to the advisor advise the 2nd advisor who's advising the 1st advisor.", 0, True)
+            elif x == 44:
+                status('m44')
+                statmurph(44)
+                murphy_yesno("You are going to the United Nations Annual Conference next month. Would you like to learn a foreign language so you can understand what is being said?", -500, "Ok. But your curriculum cost 500 dollars.", False, 0, "Ok. Here, take this \"Google Translate\" app instead.", True)
+            elif x == 45:
+                status('m45')
+                statmurph(45)
+            elif x == 46:
+                status('m46')
+                statmurph(46)
+                murphy_3opt("Your palace's power plant is on its last legs. You must replace it with: Option 1: Coal power plant. Option 2: Oil power plant. Option 3: Solar power plant. Type 1 2 or 3.", -10000, "This plant only cost 10 thousand dollars and is very efficient moneywise. But there is a lot of polution (cough cough).", False, -20000, "Well, this cost 20 thousand dollars. But pollution isn't that bad.", False, -15000, "This plant's cost is in between the other's 15 thousand. And no pollution at all! Good choice.", True)
+            elif x == 47:
+                status('m47')
+                statmurph(47)
+                murphy_yesno("Spies we sent to a secret military base have disappeared. You can send more, or send the navy to blast them out. Would you like to send more?", -1000000, "It cost one million dollars to send more spies.", False, -1200000, "It cost 1 million dollars to send the navy...and their mission failed! The navy officer is very angry, and has went on strike! You must pay 200 thousand to get him back.", False)
+            elif x == 48:
+                status('m48')
+                statmurph(48)
+                y = messagebox.askyesno("What's Up, Murphy?", "You're ruling this kingdom extremely well! There are protesters everywhere - protesting against people who hate you! They've rewarded you with a gift - a new throne room (room 3)! Do you accept?")
+                if y == True:
+                    drawtr023(3)
+                    messagebox.showinfo("What's Up, Murphy?", "You have been moved into your new throne room!")
+                else:
+                    messagebox.showinfo("What's Up, Murphy?", "Ok.")
+            elif x == 49:
+                status('m49')
+                statmurph(49)
+                y = messagebox.askyesno("What's Up, Murphy?", "The people love you! They want to thank you for the wonderful job you're doing. But they don't have a lot of money, so they sent you some picture frames (frame 3). Do you accept?")
+                if y:
+                    drawtr0232(3)
+                    messagebox.showinfo("What's Up, Murphy?", "The new frames have been installed in your throne room.")
+                else:
+                    messagebox.showinfo("What's Up, Murphy?", "Very well. I took the frames since you don't want them - it looks great on my wall!")
+            elif x == 50:
+                status('m50')
+                statmurph(50)
+                murphy_yesno("You have worked very hard. Would you like a vacation?", -1000000, "Ok. Your vacation and security cost 1 million dollars.", True, 0, "Ok.", True)
+            elif x == 51:
+                status('m51')
+                statmurph(51)
+                murphy_yesno("There has been a terrorist attack in your kingdom. 6 people died! Would you like to lower the palace flag to half mast?", 0, "Good choice.", True, -2800, "The people are furious about this! Some of them have climbed up your palace and took the flag down! They threw it in the trash. It costs 500 dollars for a new flag, 2000 dollars for roof repairs, and 300 dollars to arrest the crooks.", False)
+            elif x == 52:
+                murphy_yesno("There is a MOOSE in your FRONT YARD! You can call pest control. Would you like me to shoot it instead?", 0, "Ok. He's dead. But your council is mad! They've taken my shotgun!", False, -1000000000, "The pest control failed, and they're now in the hospital being treated for critical injuries. They've sued you! You owe them 1 billion in damages.", False)
+            elif x == 53:
+                murphy_info("Someone who won the lottery gave their money to you. You have received 600 million dollars.", 600000000, True)
+            elif x == 54:
+                status('m54')
+                statmurph(54)
+                y = randint(100, 350000000000)
+                murphy_info("You have won %s dollars in a contest!" % y, y, True)
+            elif x == 55:
+                status('m55')
+                statmurph(55)
+                y = randint(0, 100000000000)
+                a = ['Bob', 'John', 'Bill']
+                b = ['Park', 'Smith', 'Jones']
+                aa = randint(0, 2)
+                ab = randint(0, 2)
+                ba = a[aa]
+                bb = b[ab]
+                murphy_info("%s %s has given you %s dollars!" % (ba, bb, y), y, True)
+            elif x == 56:
+                status('m55')
+                statmurph(56)
+                y = randint(0, 1000000)
+                y = y * -1
+                murphy_info("Because of a banking error, you have lost %s dollars!" % y, y, False)
+            elif x == 57:
+                status('m56')
+                statmurph(57)
+                exit_save_death()
+                murphy_yesno("There is a carbon manoxide leak. Would you like to evacuate?", 0, "Good Choice.", True, 0, "THE CARBON MANOXIDE HAS KILLED YOU!", False)
+            elif x == 58:
+                status('m57')
+                statmurph(58)
+                messagebox.showinfo("What's Up, Murphy?", "Nothing is up right now.")
+            elif x == 59:
+                status('m59')
+                statmurph(59)
+                messagebox.showinfo("What's Up, Murphy?", "Your mom called again. Said to tell you to brush your teeth better.")
+            elif x == 60:
+                status('m60')
+                statmurph(60)
+                messagebox.showinfo("What's Up, Murphy?", "The 3rd floor of your palace is a mess! I'm sending up the cleaning crew.")
+            else:
+                messagebox.showerror("Error", "Murphy # %s is not found." % x)
+            sprint(details["money"])
+            sprint(x)
+            drawroomf()
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def murphy_yesno(question, money1, message1, icon1, money2, message2, icon2):
+    try:
+        y = messagebox.askyesno("What's Up, Murphy?", question)
+        if y == True:
+            answer(True)
+            mone(money1)
+            if icon1 == True:
+                messagebox.showinfo("What's Up, Murphy?", message1)
+            elif icon1 == False:
+                messagebox.showwarning("What's Up, Murphy?", message1)
+        elif y == False:
+            answer(False)
+            details["answer"] = False
+            mone(money2)
+            if icon2 == True:
+                messagebox.showinfo("What's Up, Murphy?", message2)
+            elif icon2 == False:
+                messagebox.showwarning("What's Up, Murphy?", message2)
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def murphy_info(announcement, money, icon):
+    try:
+        details["money"] = details["money"] + money
+        if icon == True:
+            messagebox.showinfo("What's Up, Murphy?", announcement)
+        elif icon == False:
+            messagebox.showwarning("What's Up, Murphy?", announcement)
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def murphy_3opt(question, money1, message1, icon1, money2, message2, icon2, money3, message3, icon3):
+    try:
+        x = simpledialog.askfloat("What's Up, Murphy?", question)
+        if x == 1:
+            details["money"] = details["money"] + money1
+            if icon1 == False:
+                messagebox.showwarning("What's Up, Murphy?", message1)
+            elif icon1 == True:
+                messagebox.showinfo("What's Up, Murphy?", message1)
+        elif x == 2:
+            details["money"] = details["money"] + money2
+            if icon2 == False:
+                messagebox.showwarning("What's Up, Murphy?", message2)
+            elif icon2 == True:
+                messagebox.showinfo("What's Up, Murphy?", message2)
+        elif x == 3:
+            details["money"] = details["money"] + money3
+            if icon3 == False:
+                messagebox.showwarning("What's Up, Murphy?", message3)
+            elif icon3 == True:
+                messagebox.showinfo("What's Up, Murphy?", message3)
+        else:
+            messagebox.showerror("Error", "You did not type 1, 2, or 3. Please try again.")
+            murphy_3opt(question, money1, message1, icon1, money2, message2, icon2, money3, message3, icon3)
+    except Exception as err:
+        er("Error: {0}" .format(err))
+
+def cheat():
+    try:
+        status('cheat')
+        statusbar("Cheat Box")
+        cheata = simpledialog.askstring('Cheat Box', 'Enter your code or type cheat code "Cancel" (case sensitive).')
+        if cheata == None or cheata == "":
+            messagebox.showerror("Error", "Nothing entered! Please try again or type cheat code \"Cancel\" (case sensitive).")
+            cheat()
+        else:
+            if cheata == 'accessmore':
+                statusbar("Cheat Code: accessmore")
+            cheata = str("cheathings.") + str(cheata) + str("()")
+            status('cheat.enter')
+            status('cheat.enter')
+            exec(cheata)
+    except Exception as err:
+        er("Error: {0}" .format(err))
+class cheathings:
+    def somethingiswrong():
+        status('somethingiswrong')
+        er("Error: This error caused by cheat code \"somethingiswrong\".")
+    def outofcash():
+        try:
+            statusbar("Cheat Code: outofcash")
+            status('cheat.cash')
+            details["money"] = 0
+            drawroom()
+        except Exception as err:
+            er("Error: {0}" .format(err))
+    def whatsgoingon():
+        try:
+            statusbar("Cheat Code: whatsgoingon")
+            status('cheat.murphy')
+            x = simpledialog.askfloat("More Details", "Which Murphy?")
+            x = int(x)
+            murphy(x)
+        except Exception as err:
+            er("Error: {0}" .format(err))
+    def imnotdead():
+        try:
+            statusbar("Cheat Code: imnotdead")
+            status('cheat.life')
+            details["lives"] = 1
+        except Exception as err:
+            er("Error: {0}" .format(err))
+    def Cancel():
+        try:
+            statusbar("Cheat Box cancelled")
+        except Exception as err:
+            er("Error: {0}" .format(err))
+    def removetheproblems():
+        try:
+            statusbar("Cheat Code: removetheproblems")
+            status('cheat.reset.error')
+            me = open("C:\\uthronium\\debug.txt", 'w')
+            me.write("")
+            me.close()
+        except Exception as err:
+            er("Error: {0}" .format(err))
+    def accessmore():
+        try:
+            status('cheat.command')
+            me = simpledialog.askstring("Command Line", "Welcome to command line. Type \"Exit\" to exit.")
+            me = str(me)
+            if me == "Exit":
+                pass
+            else:
+                status('cheat.command.exe')
+                exec(me)
+                cheathings.accessmore()
+        except Exception as err:
+            er("Error: {0}" .format(err))
+    def iamstressed():
+        try:
+            statusbar("Cheat Code: iamstressed")
+            status('cheat.stress')
+            details["money"] = details["money"] + 500000
+        except Exception as err:
+            er("Error: {0}" .format(err))
+    def takemeshopping():
+        drawstore2(False)
+    def makemerich():
+        try:
+            status('cheat.makemerich')
+            statusbar("Cheat Code: makemerich")
+            y = simpledialog.askfloat("Money", "Enter money to be added.")
+            mone(y)
+        except Exception as err:
+            er("Error: {0}" .format(err))
+    def iamdead():
+        statusbar("The program will now crash!")
+        while 1:
+            sleep(5)
+    def constantwar():
+        while 1:
+            wargame1()
+            sleep(5)
+    def whatcanido():
+        try:
+            status('cheat.whatcanido')
+            statusbar("Cheat Code: whatcanido")
+        except Exception as err:
+            er("Error: {0}" .format(err))
+        messagebox.showinfo("List", '''somethingiswrong: causes error
+outofcash: makes cash 0
+whatsgoingon: play a murphy of your choice
+imnotdead: makes lives 1
+Cancel: what it says
+removetheproblems: erases debug.txt
+accessmore: access python command line
+iamstressed: adds 500 thousand dollars
+iamdead: crash the program
+makemegrow: allow program size to be changeable
+takemeshopping: open store without logging in
+constantwar: warmode 1 over and over
+''')
+    def makemegrow():
+        try:
+            status('cheat.makemegrow')
+            statusbar("Cheat Code: makemegrow")
+            root.resizable(True, True)
+        except Exception as err:
+            er("Error: {0}" .format(err))
+def exit_save():
+    try:
+        if details["user"] == None:
+            messagebox.showerror("Cannot Save", "There is nothing to save! Log in to an account first.")
+            return None
+        status('exit-save')
+        sprint(temp["user"])
+        sure = messagebox.askyesnocancel("Save Changes", "Would you like to save changes? Guest Accounts cannot save changes.")
+        sprint(sure)
+        if sure == True:
+            exit_save2()
+        elif sure == None:
+            if temp["shutdown"] == True:
+                messagebox.showerror("Canot Cancel", "Cannot cancel during exit.")
+                exit_save()
+                return None
+        else:
+            if temp["shutdown"] == False:
+                resetdetail()
+                drawmain()
+                temp["guest"] = False
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def exit_save2():
+    try:
+        status('exsave2')
+        if temp["guest"] == False:
+            sprint('guest')
+            if temp["shutdown"] == False:
+                statusbar("Logging off")
+            status('logoff')
+            details["kill1"] = scramble(details["kill1"])
+            details["kill2"] = scramble(details["kill2"])
+            details["pass"] = scramble(details["pass"])
+            details["colorpass"] = scramble(details["colorpass"])
+
+            file2 = temp["user"]
+            file = open(file2, "wb")
+            pickle.dump(details, file)
+            file.close()
+            if temp["shutdown"] == False:
+                drawcan()
+                drawmain()
+            temp['guest'] = False
+            resetdetail()
+        else:
+            sprint('nguest')
+            resetdetail()
+            drawmain()
+            temp["guest"] = False
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def exit_save_death():
+    try:
+        status('exit.save.death')
+        details["lives"] = details["lives"] - 1
+        if details["lives"] < 1:
+            statusbar("Dying...")
+            messagebox.showwarning("Death Alert", "You have no lives left. You will now die!")
+            status('exit_death')
+            file2 = temp["user"]
+            file = open(file2, "wb")
+            pickle.dump("dead", file)
+            file.close()
+            details["new"] = False
+            details["user"] = None
+            root.destroy()
+        else:
+            messagebox.showinfo("Death Alert", "You had enough lives! You have not died!")
+            drawroom()
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def load_kingdom():
+    status('load')
+    statusbar("Loading kingdom...")
+    try:
+        if debug["os"] == True:
+            initit = "C:\\Documents and settings\\all users\\Documents\\uthronium\\"
+        else:
+            initit = "C:\\users\\public\\Documents\\uthronium\\"
+        if uname()[0] == 'Linux':
+            user = getuser()
+            initit = str('/home/') + str(user) + str('/Public/uthronium/')
+        file = askopenfilename(filetypes=(("uThronium Kingdoms", ".utr"),), initialdir=initit)
+        status('login')
+        f = file
+        sprint(file)
+        file = open(file, 'rb')
+    except:
+        pass
+    try:
+        temp["user"] = f
+        status('load')
+        file = pickle.load(file)
+        detail = file
+        if detail == "dead":
+            messagebox.showerror("Kingdom Deleted", "This kingdom has been deleted and cannot be loaded.")
+        else:
+            details["money"] = detail["money"]
+            sprint(detail["money"])
+            details["lives"] = detail["lives"]
+            details["user"] = detail["user"]
+            details["tr0"] = detail["tr0"]
+            details["tr1"] = detail["tr1"]
+            details["tr2"] = detail["tr2"]
+            details["tr3"] = detail["tr3"]
+            details["tr4"] = detail["tr4"]
+            details["tr5"] = detail["tr5"]
+            details["tr6"] = detail["tr6"]
+            details["person"] = detail["person"]
+            details["f1"] = detail["f1"]
+            details["f2"] = detail["f2"]
+            details["f3"] = detail["f3"]
+            details["pass"] = unscramble(detail["pass"])
+            details["colorpass"] = unscramble(detail["colorpass"])
+            details["kill1"] = unscramble(detail["kill1"])
+            details["kill2"] = unscramble(detail["kill2"])
+            details["new"] = detail["new"]
+            if details["pass"] != None:
+                loadpass()
+            else:
+                if details["colorpass"] == None:
+                    drawroom()
+                else:
+                    colorpa(False)
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def loadpass():
+    try:
+        status('pass')
+        statusbar("Waiting for password...")
+        x = simpledialog.askstring("Password", "Please enter your password.")
+        if x == details["pass"]:
+            drawroom()
+        else:
+            y = messagebox.askretrycancel("Wrong Password", "Incorrect password. Try again?.")
+            if y == True:
+                loadpass()
+            else:
+                resetdetail()
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def debt():
+    try:
+        status('debt')
+        me = details["money"]
+        if me < 0:
+            messagebox.showwarning("Debt Warning", "Alert: The country is now in debt! If you let your debt get higher than 10 billion you will be assasinated!")
+        if me < -10000000000:
+            messagebox.showerror("Debt Warning", "You have over 10 billion dollars in debt. The people are not happy about this. They have assasinated you! You will now lose all progress in the game unless you have another life.")
+            exit_save_death()
+        rand = randint(0, 100)
+        if rand > 70 and details["kill1"] == True:
+            messagebox.showerror("Death", "Remember how earlier you declined to put your bodyguards on high alert? Well, too late now, they're dead. The assasain has arrived and...AAGH!!!! ...........")
+            exit_save_death()
+        killme2()
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def answer(x):
+    try:
+        debug["answer"] = x
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def confirm():
+    try: 
+        statusbar("Confirmation Pending")
+        me = messagebox.askokcancel("Confirmation Required", "Are you sure you would like to proceed?")
+        return me
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def create_king():
+    if confirm() != True:
+        return None
+    try:
+        status('create.king')
+        statusbar("Creating kingdom")
+        details["new"] = True
+        details["user"] = True
+        drawroom()
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def aboutit():
+    statusbar("About")
+    messagebox.showinfo("About", '''
+uThronium was created by Tobias Park.
+Throne Room 0 from English Wikipedia, credit: malate269.
+Throne Room 2 taken at Thomas Edison's birthplace.
+Throne Room 1 taken near Thomas Edison's birthplace.
+Most other throne rooms taken from the English Wikipedia.
+This application programmed with Python 3.3.2.''')
+def randmurph():
+    murphy(False)
+def drawpas():
+    try:
+        status('draw.pas')
+        statusbar('Drawing Store - Password')
+        drawcan()
+        drawtr(storeb)
+        canvas.create_image(410, 340, image=bspace2)
+        canvas.create_text(400, 50, text="Passwords", font=('Times', 72), fill='green')
+        bac = Button(root, text="<- Back to Store", command=drawstore)
+        bac.place(relx=.050, rely=.850)
+        a = Button(root, text="Traditional", command=pas)
+        a.place(relx=.42, rely=.4, anchor=NE)
+        b = Button(root, text="Color", command=colorp)
+        b.place(relx=.6, rely=.4, anchor=NW)
+        canvas.create_text(310, 330, text='''
+ Protect your account
+         with words,
+ numbers, and symbols.
+  Note: This password
+does not hide characters.''', font=('Times', 12), fill='green')
+        canvas.create_text(510, 330, text='''
+Traditional password
+   too boring? Use a
+  system of clicking
+colored buttons instead!
+''', font=('Times', 12), fill='green')
+        canvas.create_image(310, 410, image=whited)
+        canvas.create_text(310, 410, text="Price: $5,000,000", font=('Times', 12), fill='green')
+        canvas.create_text(510, 380, text="Price: $5,200,000", font=('Times', 12), fill='green')
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def drawframe():
+    try:
+        status('drawframe')
+        statusbar('Drawing Store - Picture Frames')
+        drawcan()
+        drawtr(storeb)
+        canvas.create_text(400, 50, text="Picture Frames", font=('Times', 72), fill='green')
+        bac = Button(root, text="<- Back to Store", command=drawstore)
+        bac.place(relx=.050, rely=.850)
+        a = Button(root, image=f1, command=drawf1)
+        a.place(relx=.075, rely=.3)
+        b = Button(root, image=f2, command=drawf2)
+        b.place(relx=.375, rely=.3)
+        c = Button(root, image=f3, command=drawf3)
+        c.place(relx=.675, rely=.3)
+        canvas.create_text(160, 300, text="Frame 1", fill='green', font=('Times', 16))
+        canvas.create_text(400, 300, text="Frame 2", fill='green', font=('Times', 16))
+        canvas.create_text(640, 300, text="Frame 3", fill='green', font=('Times', 16))
+        more = Button(root, text="Go to Your Storeroom ->", command=drawstoreroom2)
+        more.place(relx=.05, rely=.8)
+        canvas.create_image(50, 310, anchor=NW, image=whitespaceb)
+        canvas.create_text(160, 330, text='''
+Buy this nice contemporary
+   picture frame, complete
+    with colored squares!''', font=('Times', 12), fill='green')
+        canvas.create_text(160, 375, text="Price: $150", font=('Times', 12), fill='green')
+        canvas.create_text(400, 330, text='''
+Check out this awesome
+   frame with an ocean
+          background!''', font=('Times', 12), fill='green')
+        canvas.create_text(400, 375, text=" Price: $200", font=('Times', 12), fill='green')
+        canvas.create_text(640, 330, text='''
+Take this wooden frame!
+  It also already has a
+      hole for hanging!''', font=('Times', 12), fill='green')
+        canvas.create_text(640, 375, text="Price: $300", font=('Times', 12), fill='green')
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def drawf12(roomtobe, money):
+    try:
+        status('drawf12')
+        if confirm():
+            if details[str('f') + str(roomtobe)] == True or details[str('f') + str(roomtobe)] == 'y':
+                messagebox.showerror("Already Bought", "You have already bought this picture frame! You cannot buy it again. If you would like to rehang this frame, please go to your storeroom.")
+            else:
+                statusbar(str('Buying Throne Room ') + str(roomtobe))
+                mone(money)
+                for x in range(0, 3):
+                    x = x + 1
+                    if roomtobe != x:
+                        if details[str("f") + str(x)] == 'y':
+                            details[str("f") + str(x)] = True
+                details[str("f") + str(roomtobe)] = 'y'
+                drawroom()
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def drawtr0232(roomtobe):
+    status('drawtr0232')
+    try:
+        for x in range(1, 4):
+            if roomtobe != x:
+                if details[str("f") + str(x)] == 'y':
+                    details[str("f") + str(x)] = True
+        statusbar(str('Buying Picture Frame ') + str(roomtobe))
+        details[str("f") + str(roomtobe)] = 'y'
+        sprint(roomtobe)
+        drawroom()
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def drawf10():
+    drawtr0232(1)
+def drawf20():
+    drawtr0232(2)
+def drawf30():
+    drawtr0232(3)
+def drawstoreroom2():
+    try:
+        status('drawstoreroom2')
+        statusbar('Drawing Store - Picture Frames - Storeroom')
+        drawcan()
+        drawtr(storeb)
+        canvas.create_text(400, 350, text="A shaded button means that that frame has not be bought, or is being used.", font=('Times', 19), fill='green')
+        canvas.create_text(400, 50, text="Picture Frames - Storeroom", font=('Times', 48), fill='green')
+        bac = Button(root, text="<- Back to Picture Frames", command=drawframe)
+        bac.place(relx=.050, rely=.850)
+        a = Button(root, image=f1, command=drawf10)
+        a.place(relx=.075, rely=.3)
+        b = Button(root, image=f2, command=drawf20)
+        b.place(relx=.375, rely=.3)
+        c = Button(root, image=f3, command=drawf30)
+        c.place(relx=.675, rely=.3)
+        canvas.create_text(160, 300, text="Frame 1", fill='green', font=('Times', 16))
+        canvas.create_text(400, 300, text="Frame 2", fill='green', font=('Times', 16))
+        canvas.create_text(640, 300, text="Frame 3", fill='green', font=('Times', 16))
+        y = 0
+        for x in range(1, 4):
+            sprint(x)
+            h = str(details[str('f') + str(x)])
+            sprint(h)
+            if h != 'True' or h == 'y':
+                if x == 1:
+                    z = 'a'
+                if x == 2:
+                    z = 'b'
+                if x == 3:
+                    z = 'c'
+                exec(str(z) + str('.config(state=DISABLED)'))
+            y = y + 1
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def drawf1():
+    drawf12(1, -150)
+def drawf2():
+    drawf12(2, -200)
+def drawf3():
+    drawf12(3, -300)
+def colorp():
+    try:
+        status('colorp')
+        me = True
+        if details["pass"] != None or details["colorpass"] != None:
+            messagebox.showerror("Password Already Bought", "You already have a password in your possesion. To return it, go to the store's \"Front Desk\".")
+            me = False
+        if me:
+            if confirm():
+                colorpa(True)
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def drawmains():
+    resetdetail()
+    drawmain()
+def colorpa(x):
+    try:
+        global countp
+        countp = 0
+        status('colorpa')
+        drawcan()
+        a = Button(root, image=c_1, command=cp1)
+        a.place(relx=.0, rely=.0, anchor=NW)
+        b = Button(root, image=c_2, command=cp2)
+        b.place(relx=.33, rely=.0, anchor=NW)
+        c = Button(root, image=c_3, command=cp3)
+        c.place(relx=.66, rely=.0, anchor=NW)
+
+        a = Button(root, image=c_4, command=cp4)
+        a.place(relx=.0, rely=.3, anchor=NW)
+        b = Button(root, image=c_5, command=cp5)
+        b.place(relx=.33, rely=.3, anchor=NW)
+        c = Button(root, image=c_6, command=cp6)
+        c.place(relx=.66, rely=.3, anchor=NW)
+
+        d = Button(root, image=c_7, command=cp7)
+        d.place(relx=.0, rely=.6, anchor=NW)
+        e = Button(root, image=c_8, command=cp8)
+        e.place(relx=.33, rely=.6, anchor=NW)
+        f = Button(root, image=c_9, command=cp9)
+        f.place(relx=.66, rely=.6, anchor=NW)
+        back = Button(root, text="Back to Login Screen", command=drawmains)
+        back.place(relx=.45, rely=.950, anchor=W)
+        passtemp["setup"] = x
+        passtemp["pass"] = ""
+        passtemp["colors"] = ""
+        go = Button(root, text="Go", command=gopass)
+        go.place(relx=.45, rely=.950, anchor=E)
+        if x == True:
+            messagebox.showinfo("How to Use", "Each button has a different color. Click the buttons to set your password to the colors of your choice.")
+        else:
+            messagebox.showinfo("How to Use", "Each button has a different color. Click the buttons to enter the password with the colors you chose earlier.")
+        status('color')
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def cp1():
+    passtemp["pass"] = str(passtemp["pass"]) + str('1')
+    passtemp["colors"] = str(passtemp["colors"]) + str('Black. ')
+def cp2():
+    passtemp["pass"] = str(passtemp["pass"]) + str('2')
+    passtemp["colors"] = str(passtemp["colors"]) + str('Red. ')
+def cp3():
+    passtemp["pass"] = str(passtemp["pass"]) + str('3')
+    passtemp["colors"] = str(passtemp["colors"]) + str('Dark Blue. ')
+def cp4():
+    passtemp["pass"] = str(passtemp["pass"]) + str('4')
+    passtemp["colors"] = str(passtemp["colors"]) + str('Purple/Pink. ')
+def cp5():
+    passtemp["pass"] = str(passtemp["pass"]) + str('5')
+    passtemp["colors"] = str(passtemp["colors"]) + str('Green. ')
+def cp6():
+    passtemp["pass"] = str(passtemp["pass"]) + str('6')
+    passtemp["colors"] = str(passtemp["colors"]) + str('White. ')
+def cp7():
+    passtemp["pass"] = str(passtemp["pass"]) + str('7')
+    passtemp["colors"] = str(passtemp["colors"]) + str('Yellow. ')
+def cp8():
+    passtemp["pass"] = str(passtemp["pass"]) + str('8')
+    passtemp["colors"] = str(passtemp["colors"]) + str('Light Blue. ')
+def cp9():
+    passtemp["pass"] = str(passtemp["pass"]) + str('9')
+    passtemp["colors"] = str(passtemp["colors"]) + str('Orange. ')
+def gopass():
+    if passtemp["setup"] == True:
+        x = messagebox.askyesno("Confirm Password", str(passtemp["colors"]) + str('Is that the color password you entered?'))
+        if x:
+            gopass3(passtemp)
+        else:
+            messagebox.showinfo("Repeating Action", "Ok. Please try again. You will not be charged twice.")
+            colorp()
+    else:
+        gopass3(passtemp)
+def gopass3(x):
+    try:
+        status('gopass3')
+        passtemp = x
+        if passtemp["setup"] == False:
+            if passtemp["pass"] != "":
+                if passtemp["pass"] == details["colorpass"]:
+                    status('color_passed')
+                    drawroom()
+                else:
+                    messagebox.showerror("Wrong Password", "Incorrect color password.")
+                    passtemp["pass"] = ""
+        else:
+            mone(-5200000)
+            details["colorpass"] = passtemp["pass"]
+            drawroom()
+            passtemp = None
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def drawother():
+    try:
+        status('drawother')
+        statusbar("Drawing Store - Other")
+        drawcan()
+        drawtr(storeb)
+        status('store+other')
+        canvas.create_text(400, 50, text="Other", font=('Times', 72), fill='green')
+        bac = Button(root, text="<- Back to Store", command=drawstore)
+        bac.place(relx=.050, rely=.850)
+        a = Button(root, text="Buy Another Life", command=newlife)
+        a.place(relx=.1, rely=.4)
+        b = Button(root, image=personprev, command=visual)
+        canvas.create_text(275, 170, text="Visual Person Murphy", fill='green', font=('Times', 16))
+        b.place(relx=.3, rely=.3)
+        c = Button(root, text="Donate to the Poor", command=useless)
+        c.place(relx=.5, rely=.4)
+        d = Button(root, text="Invest Money in the Stock Market", command=stock)
+        d.place(relx=.7, rely=.4)
+        canvas.create_text(135, 315, text='''Are you afraid of dying?
+      Buy the best life
+     insuranse around -
+          another life!''', font=('Times', 12), fill='green')
+        canvas.create_text(280, 400, text='''See what Murphy looks
+      like by having him
+    stand in your throne
+                room!
+''', font=('Times', 12), fill='green')
+        canvas.create_text(455, 300, text='''
+   Help the poor by
+donating any amount!
+''', font=('Times', 12), fill='green')
+        canvas.create_text(650, 310, text='''
+  Click to invest 5000
+   dollars in the stock
+  market. We will buy/
+         sell for you!''', font=('Times', 12), fill='green')
+        canvas.create_text(135, 370, text="Price: $5 Billion", font=('Times', 12), fill='green')
+        canvas.create_text(280, 450, text="Price: $10 Thousand", font=('Times', 12), fill='green')
+        canvas.create_text(455, 340, text="Price: Your Choice", font=('Times', 12), fill='green')
+        canvas.create_text(650, 380, text="Price: $5,000 Initial Cost", font=('Times', 12), fill='green')
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def stock():
+    try:
+        status('stock')
+        if confirm():
+            statusbar("Investing Money in the Stock Market")
+            mone(-5000)
+            drawother()
+            messagebox.showinfo("Stock Update", "5000 dollars have been invested. I am managing the stocks, so you do not have to worry about all the details.")
+            x = randint(0, 100)
+            y = randint(0, 5000)
+            if x < 52:
+                z = details["money"] + 5000 + y
+                messagebox.showinfo("Stock Update", "You have gained %s dollars!" % y)
+            else:
+                z = details["money"] + 5000 - y
+                messagebox.showinfo("Stock Update", "You have lost %s dollars!" % y)
+            details["money"] = z
+            drawroomt(None)
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def useless():
+    try:
+        status('useless')
+        if confirm():
+            statusbar("Donating to the Poor")
+            x = simpledialog.askfloat("Donate to the Poor", "Type in amount to donate to the poor.")
+            if x < 0:
+                messagebox.showerror("Transaction Rejected", "Your transaction was not properly filed.")
+                return None
+            x = x * -1
+            mone(x)
+    except:
+        y = messagebox.askretrycancel("Nothing Entered", "You did not enter a number. Try again?")
+        if y == True:
+            useless()
+def visual():
+    try:
+        status('visual')
+        if confirm() and details["person"] == False:
+            statusbar('Buying Visual Person Murphy')
+            mone(-10000)
+            details["person"] = True
+            drawroom()
+        elif details["person"] == True:
+            messagebox.showerror("Already Bought", "You have already bought this item.")
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def newlife():
+    try:
+        status('newlife')
+        if confirm() == True:
+            statusbar('Buying New Life')
+            mone(-5000000000)
+            details["lives"] = details["lives"] + 1
+            drawroom()
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def drawstore():
+    drawstore2(True)
+def drawstore2(x):
+    try:
+        status('drawstore2')
+        if details["user"] == None and x != False or debug["status"] == 'color':
+            messagebox.showerror("Login Required", "Please log in to your account to access the store.")
+        else:
+            statusbar("Drawing Store")
+            drawcan()
+            drawtr(storeb)
+            b = Button(root, text="<- Back to Throne Room", command=drawroom)
+            b.place(relx=.050, rely=.850)
+            canvas.create_text(400, 50, text="Store", font=('Times', 72), fill='green')
+            a = Button(root, image=trprev, command=drawtroom)
+            a.place(relx=.050, rely=.300)
+            canvas.create_text(120, 320, text="Throne Rooms", font=('Times', 16), fill='green')
+            p = Button(root, image=puz, command=drawpas)
+            p.place(relx=.300, rely=.270)
+            canvas.create_text(320, 330, text="Passwords", font=('Times', 16), fill='green')
+            frame = Button(root, image=fprev, command=drawframe)
+            frame.place(relx=.520, rely=.330)
+            canvas.create_text(520, 330, text="Picture Frames", font=('Times', 16), fill='green')
+            oth = Button(root, image=other, command=drawother)
+            oth.place(relx=.790, rely=.380)
+            canvas.create_text(720, 330, text="Other", font=('Times', 16), fill='green')
+            d = Button(root, image=desk, command=drawdesk)
+            d.place(relx=.42, rely=.75, anchor=W)
+            canvas.create_text(410, 350, text="Front Desk", font=('Times', 16), fill='green')
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def drawdesk():
+    try:
+        status('drawdesk')
+        statusbar("Drawing Store - Front Desk")
+        drawcan()
+        drawtr(storeb)
+        b = Button(root, text="<- Back to Store", command=drawstore)
+        b.place(relx=.050, rely=.850)
+        canvas.create_text(400, 50, text="Front Desk", font=('Times', 72), fill='green')
+        canvas.create_text(390, 150, text="Choose a category from which to return an item.", font=('Times', 30), fill='green')
+        a = Button(root, image=trprev, command=returntroom)
+        a.place(relx=.050, rely=.300)
+        canvas.create_text(120, 320, text="Throne Rooms", font=('Times', 16), fill='green')
+        p = Button(root, image=puz, command=returnpas)
+        p.place(relx=.300, rely=.270)
+        canvas.create_text(320, 330, text="Passwords", font=('Times', 16), fill='green')
+        frame = Button(root, image=fprev, command=returnframe)
+        frame.place(relx=.520, rely=.330)
+        canvas.create_text(520, 330, text="Picture Frames", font=('Times', 16), fill='green')
+        oth = Button(root, image=other, command=returnother)
+        oth.place(relx=.790, rely=.380)
+        canvas.create_text(720, 330, text="Other", font=('Times', 16), fill='green')
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def returnframe():
+    try:
+        if confirm():
+            status('returnframe')
+            statusbar('Returning Picture Frame...')
+            y = False
+            x = simpledialog.askfloat('Enter Frame Number', "Enter the number of the frame you would like to return. Example: To return frame 1, type \"1\".")
+            x = int(x)
+            z = details[str('f') + str(x)]
+            if z == False:
+                messagebox.showerror("Not Bought", "You cannot return an item you have not bought!")
+                y = True
+            if z == 'y':
+                messagebox.showerror("Using This Frame", "You are currently using this frame! Please select another frame from the storeroom or buy another frame before continuing. The storeroom is located in the 'Picture Frames' section of the store.")
+            
+            if y == False:
+                if x == 1:
+                    mone(150)
+                if x == 2:
+                    mone(200)
+                if x == 3:
+                    mone(300)
+                details[str('f') + str(x)] = False
+    except Exception as err:
+        if debug["status"] != 'returnpas':
+            er("Error: {0}" .format(err))
+        else:
+            messagebox.showerror("Invalid Answer", "Your answer did not conform to specifications. Please try again.")
+def returnpas():
+    pass
+def returnother():
+    pass
+def returntroom():
+    try:
+        status('returntroom')
+        if confirm():
+            statusbar('Returning Throne Room')
+            y = False
+            x = simpledialog.askfloat('Enter Room Number', "Enter the number of the room you would like to return. Example: To return Throne Room 1, type \"1\".")
+            x = int(x)
+            z = details[str('tr') + str(x)]
+            if z == False:
+                messagebox.showerror("Not Bought", "You cannot return an item you have not bought!")
+                y = True
+            if z == 'y':
+                messagebox.showerror("Using This Room", "You are currently using this room! Please select another room from the storeroom or buy another room before continuing. The storeroom is located in the 'Throne Rooms' section of the store.")
+            
+            if y == False:
+                if x == 0:
+                    mone(250000)
+                if x == 1:
+                    mone(100000)
+                if x == 2:
+                    mone(300000)
+                if x == 3:
+                    mone(500000)
+                if x == 4:
+                    mone(200000)
+                if x == 5:
+                    mone(100000000)
+                if x == 6:
+                    mone(150000000)
+                details[str('tr') + str(x)] = False
+    except Exception as err:
+        if debug["status"] != 'returntroom':
+            er("Error: {0}" .format(err))
+        else:
+            messagebox.showerror("Invalid Answer", "Your answer did not conform to specifications. Please try again.")
+def drawtr0():
+    drawtr23(-250000, 0)
+def drawtr1():
+    drawtr23(-100000, 1)
+def drawtr2():
+    drawtr23(-300000, 2)
+def drawtr3():
+    drawtr23(-500000, 3)
+def drawtr4():
+    drawtr23(-200000, 4)
+def drawtr023(roomtobe):
+    try:
+        status('drawtr023')
+        statusbar(str('Buying Throne Room ') + str(roomtobe))
+        for x in range(0, 7):
+            if roomtobe != x:
+                if details[str("tr") + str(x)] == 'y':
+                    details[str("tr") + str(x)] = True
+        details[str("tr") + str(roomtobe)] = 'y'
+        sprint(roomtobe)
+        drawroom()
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def drawtr01():
+    drawtr023(1)
+def drawtr02():
+    drawtr023(2)
+def drawtr03():
+    drawtr023(3)
+def drawtr04():
+    drawtr023(4)
+def drawtr00():
+    drawtr023(0)
+def drawtr05():
+    drawtr023(5)
+def drawtr06():
+    drawtr023(6)
+def drawstoreroom():
+    try:
+        status('draw.storeroom')
+        statusbar('Drawing Store - Throne Rooms - Storeroom')
+        drawcan()
+        drawtr(storeb)
+        canvas.create_text(400, 50, text="Throne Rooms - Storeroom", font=('Times', 48), fill='green')
+        canvas.create_text(400, 300, text="A shaded button means that that room has not be bought, or is being used.", font=('Times', 19), fill='green')
+        back = Button(root, text="<- Back to Throne Rooms", command=drawtroom)
+        back.place(relx=.050, rely=.8)
+        a = Button(root, image=fp0, command=drawtr00)
+        a.place(relx=.050, rely=.200)
+        canvas.create_text(120, 260, text="Room 0", font=('Times', 16), fill='green')
+        b = Button(root, image=fp1, command=drawtr01)
+        b.place(relx=.270, rely=.200)
+        canvas.create_text(300, 260, text="Room 1", font=('Times', 16), fill='green')
+        c = Button(root, image=fp2, command=drawtr02)
+        c.place(relx=.49, rely=.2)
+        canvas.create_text(480, 260, text="Room 2", font=('Times', 16), fill='green')
+        d = Button(root, image=fp3, command=drawtr03)
+        d.place(relx=.71, rely=.2)
+        canvas.create_text(650, 260, text="Room 3", font=('Times', 16), fill='green')
+        e = Button(root, image=fp4, command=drawtr04)
+        e.place(relx=.27, rely=.575)
+        canvas.create_text(300, 490, text="Room 4", font=('Times', 16), fill='green')
+        f = Button(root, image=fp5, command=drawtr05)
+        f.place(relx=.49, rely=.575)
+        canvas.create_text(475, 490, text="Room 5", font=('Times', 16), fill='green')
+        g = Button(root, image=fp6, command=drawtr06)
+        g.place(relx=.71, rely=.575)
+        canvas.create_text(650, 490, text="Room 6", font=('Times', 16), fill='green')
+        y = 0
+        for x in range(0, 7):
+            h = str(details[str('tr') + str(x)])
+            sprint(h)
+            if h != 'True' or h == 'y':
+                if x == 0:
+                    z = 'a'
+                if x == 1:
+                    z = 'b'
+                if x == 2:
+                    z = 'c'
+                if x == 3:
+                    z = 'd'
+                if x == 4:
+                    z = 'e'
+                if x == 5:
+                    z = 'f'
+                if x == 6:
+                    z = 'g'
+                exec(str(z) + str('.config(state=DISABLED)'))
+            y = y + 1
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def drawtr23(money, roomtobe):
+    try:
+        status('drawtr23')
+        statusbar(str('Buying Throne Room ') + str(roomtobe))
+        if confirm():
+            if details[str('tr') + str(roomtobe)] == True or details[str('tr') + str(roomtobe)] == 'y':
+                messagebox.showerror("Already Bought", "You have already bought this throne room! You cannot buy it again. If you would like to move in to this throne room, please go to your storeroom.")
+            else:
+                mone(money)
+                for x in range(0, 7):
+                    if roomtobe != x:
+                        if details[str("tr") + str(x)] == 'y':
+                            details[str("tr") + str(x)] = True
+                details[str("tr") + str(roomtobe)] = 'y'
+                drawroom()
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def drawtr6():
+    drawtr23(-1500000, 6)
+def drawtr5():
+    drawtr23(-1000000, 5)
+def drawtroom():
+    try:
+        status('drawtr')
+        statusbar('Drawing Store - Throne Rooms')
+        drawcan()
+        drawtr(storeb)
+        back = Button(root, text="<- Back to Store", command=drawstore)
+        back.place(relx=.050, rely=.8)
+        more = Button(root, text="Go to Your Storeroom ->", command=drawstoreroom)
+        more.place(relx=.05, rely=.85)
+        canvas.create_text(400, 50, text="Throne Rooms", font=('Times', 72), fill='green')
+        a = Button(root, image=fp0, command=drawtr0)
+        a.place(relx=.050, rely=.200)
+        canvas.create_image(375, 270, image=whitespaceb, anchor=N)
+        canvas.create_text(120, 260, text="Room 0", font=('Times', 16), fill='green')
+        canvas.create_text(130, 290, text='''Have your throne room in a
+              school room!''', font=('Times', 12), fill='white')
+        canvas.create_text(120, 320, text="  Price: $250,000", font=('Times', 12), fill='white')
+        b = Button(root, image=fp1, command=drawtr1)
+        b.place(relx=.270, rely=.200)
+        canvas.create_text(300, 260, text="Room 1", font=('Times', 16), fill='green')
+        canvas.create_text(300, 290, text='''
+Place your throne room
+      outdoors in the
+ beautiful countryside''', font=('Times', 12), fill='white')
+        canvas.create_text(300, 340, text="Price: $100,000", font=('Times', 12), fill='white')
+        c = Button(root, image=fp2, command=drawtr2)
+        c.place(relx=.49, rely=.2)
+        canvas.create_text(480, 260, text="Room 2", font=('Times', 16), fill='green')
+        canvas.create_text(480, 300, text='''Enjoy the nice smell
+  of flowers in this
+garden throne room''', font=('Times', 12), fill='white')
+        canvas.create_text(480, 340, text="Price: $300,000", font=('Times', 12), fill='white')
+        d = Button(root, image=fp3, command=drawtr3)
+        d.place(relx=.71, rely=.2)
+        canvas.create_text(650, 260, text="Room 3", font=('Times', 16), fill='green')
+        canvas.create_text(650, 280, text='''
+Enjoy this court
+like throne room''', font=('Times', 12), fill='white')
+        canvas.create_text(650, 320, text="Price: $500,000", font=('Times', 12), fill='white')
+        e = Button(root, image=fp4, command=drawtr4)
+        e.place(relx=.27, rely=.575)
+        canvas.create_image(480, 550, image=bspace2)
+        canvas.create_text(300, 490, text="Room 4", font=('Times', 16), fill='green')
+        canvas.create_text(300, 530, text='''
+Want to be humble?
+  This is about as
+ simple as you can
+            get!''', font=('Times', 12), fill='white')
+        canvas.create_text(300, 590, text="Price: $200,000", font=('Times', 12), fill='white')
+        f = Button(root, image=fp5, command=drawtr5)
+        f.place(relx=.49, rely=.575)
+        canvas.create_text(475, 490, text="Room 5", font=('Times', 16), fill='green')
+        canvas.create_text(475, 530, text='''Have a REAL throne
+room, complete with
+       red carpet!''', font=('Times', 12), fill='white')
+        canvas.create_text(475, 565, text="Price: $1,000,000", font=('Times', 12), fill='white')
+        g = Button(root, image=fp6, command=drawtr6)
+        g.place(relx=.71, rely=.575)
+        canvas.create_text(650, 490, text="Room 6", font=('Times', 16), fill='green')
+        canvas.create_text(650, 530, text='''
+Put your throne room
+ in front of the White
+   House and hope
+ Obama won't mind!''', font=('Times', 12), fill='white')
+        canvas.create_text(650, 590, text="Price: $1,500,000", font=('Times', 12), fill='white')
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def drawacc():
+    try:
+        if logged() == False:
+            messagebox.showerror("Log In", "Please Log In to access the accessories.")
+            return None
+        if debug["status"] != 'color':
+            status('acc')
+            statusbar("Drawing Accessories")
+            drawcan()
+            drawtr(storeb)
+            canvas.create_text(400, 50, text="Accessories", font=('Times', 72), fill='green')
+            back = Button(root, text="<- Back", command=drawroom)
+            back.place(relx=.0, rely=.9, anchor=W)
+            a = Button(root, text="War Mode", command=warm)
+            a.place(relx=.01, rely=.5)
+            b = Button(root, text="Spy Mode", command=spy)
+            b.place(relx=.5, rely=.5)
+            c = Button(root, text="SMS", command=textm)
+            c.place(relx=.95, rely=.5)
+            sprint('heythere')
+        else:
+            messagebox.showerror("Enter Password", "You must enter your password before accessing this feature.")
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def warm():
+    try:
+        if logged():
+            status('warm')
+            if confirm():
+                statusbar("War Mode - Choosing Mode and Transaction")
+                messagebox.showinfo("War Mode Info", 'Dying in "War Mode" do not affect your uThrone account.')
+                x = randint(0, 1)
+                if x == 0:
+                    mone(2000000)
+                    messagebox.showinfo("War Mode Info", "Your rich uncle is proud of you for serving in battle with your troops. He has sent you 2 million dollars.")
+                    wargame1()
+                else:
+                    mone(-1000000)
+                    messagebox.showinfo("War Mode Info", "It cost 1 million dollars to sneak you into the army.")
+                    wargame2()
+        else:
+            messagebox.showerror("Log In", "You must have in account to play War Mode.")
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def spy():
+    try:
+        if logged():
+            if confirm():
+                status('spy')
+                statusbar("Spy Mode - Choosing Mode and Transaction")
+                x = randint(0, 1)
+                if x == 0:
+                    mone(1000000)
+                    messagebox.showinfo("War Mode Info", "Your grandfather won the lottery recently and gave you 1 million dollars for your army service!")
+                    spy1()
+                else:
+                    mone(-2000000)
+                    messagebox.showinfo("War Mode Info", "It cost 2 million dollars to smuggle you into the CIA.")
+                    spy2()
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def textm():
+    pass
+def pas():
+    try:
+        status('pas')
+        me = True
+        if details["pass"] != None or details["colorpass"] != None:
+            messagebox.showerror("Password Already Bought", "You already have a password in your possesion. To return it, go to the store's \"Front Desk\".")
+            me = False
+        if me:
+            if confirm():
+                if details["pass"] == None:
+                    statusbar("Buying Traditional Password")
+                    mone(-5000000)
+                    x = simpledialog.askstring("Enter Password", "Please Enter Your Password Below")
+                    y = simpledialog.askstring("Confirm Password", "Please Confirm Your Password.")
+                    if x == "" or x == None:
+                        messagebox.showerror("Nothing Entered", "Nothing Entered. Please try again. You will be charged a 5 million dollar fine.")
+                        pas()
+                        return None
+                    if x == y:
+                        details["pass"] = x
+                        drawroom()
+                    else:
+                        messagebox.showerror("Non-Matching", "Passwords do not match.")
+                        mone(5000000)
+                else:
+                    messagebox.showerror("Already Bought", "You already have a password.")
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def instruct():
+    messagebox.showinfo("Instructions For Instructions", "Text instructions and audio tutorials can be found in the .zip folder you got to install uThronium. If you deleted this file, a replacement can be obtained by emailing emcpark@gmail.com.")
+def resig():
+    try:
+        status('resig')
+        if confirm() == True:
+            details["lives"] = 1
+            exit_save_death()
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def showrules():
+    statusbar('Displaying Rules')
+    messagebox.showinfo("Rules", '''Rules:
+1. A player may not use the Guest account or another kingdom to donate money to another kingdom in his/her posession.
+2. A player may not change a kingdom file.
+3. A player may not attempt to extract a password from a game file, even without the scramble code.
+
+Play safe!''')
+def donat():
+    try:
+        status('donate')
+        statusbar('Donating Money to Another User')
+        if confirm() == True:
+            x = simpledialog.askfloat("Donate", '''How much money would you like to donate?
+You may choose who to donate money to
+after entering amount.''')
+            if x < 0:
+                messagebox.showerror("Error", "The transaction you requested has been rejected.")
+            else:
+                if debug["os"] == True:
+                    initit = "C:\\Documents and settings\\all users\\Documents\\uthronium\\"
+                else:
+                    initit = "C:\\users\\public\\Documents\\uthronium\\"
+                file = askopenfilename(filetypes=(("uThronium Kingdoms", ".utr"),), initialdir=initit)
+                status('donate2')
+                z = open(file, 'rb')
+                sprint(file)
+                z = pickle.load(z)
+                z["money"] = z["money"] + x
+                if debug["os"] == True:
+                    file2 = str("C:\\Documents and settings\\all users\\Documents\\uthronium\\") + str(z["user"]) + str(".utr")
+                else:
+                    file2 = str("C:\\users\\public\\Documents\\uthronium\\") + str(z["user"]) + str(".utr")
+                file3 = open(file2, "wb")
+                pickle.dump(z, file3)
+                file3.close()
+                statusbar(str('Donating ') + str(x) + str(' amount of money to the poor'))
+                x = -1 * x
+                mone(x)
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def drawroom():
+    drawroomt(True)
+def drawroomt(x):
+    try:
+        status('drawroomt')
+        statusbar('Drawing Throne Room')
+        if x == False:
+            sprint('hi')
+            temp["guest"] = True
+        if details["user"] == None and x != False:
+            messagebox.showerror("No Account", "You are currently not logged on to an account!")
+        else:
+            drawcan()
+            status('drawroom')
+            if 1:
+                if details["tr1"] == 'y':
+                    drawtr(tr1f)
+                elif details["tr0"] == 'y':
+                    drawtr(tr0f)
+                elif details["tr2"] == 'y':
+                    drawtr(tr2f)
+                elif details["tr3"] == 'y':
+                    drawtr(tr3f)
+                elif details["tr4"] == 'y':
+                    drawtr(tr4f)
+                elif details["tr5"] == 'y':
+                    drawtr(tr5f)
+                elif details["tr6"] == 'y':
+                    drawtr(tr6f)
+                else:
+                    details["new"] = True
+                    z = randint(1, 6)
+                    y = str('tr') + str(z)
+                    details[y] = 'y'
+                    drawroomt(x)
+                    return None
+            lo = Button(canvas, image=lo2, anchor=W, command=exit_save)
+            lo.place(relx=.680, rely=.84)
+            store = Button(canvas, image=s, anchor=W, command=drawstore)
+            store.place(relx=.800, rely=.84)
+            i = Button(canvas, image=ins, anchor=W, command=instruct)
+            i.place(relx=.440, rely=.84)
+            r = Button(canvas, image=resign, anchor=W, command=resig)
+            r.place(relx=.320, rely=.84)
+            rules = Button(canvas, image=rule, anchor=W, command=showrules)
+            rules.place(relx=.200, rely=.84)
+            donate = Button(canvas, image=don, anchor=W, command=donat)
+            donate.place(relx=.800, rely=.640)
+            accb = Button(canvas, image=accp, anchor=W, command=drawacc)
+            accb.place(relx=.800, rely=.440)
+            wum = Button(canvas, image=wumb, command=randmurph)#, anchor=W)
+            wum.place(relx=.560, rely=.84)
+            canvas.create_image(0, 467, anchor=W, image=whitespace_room)
+            canvas.create_text(490, 460, text="What's Up,", font=('Times', 12))
+            canvas.create_text(490, 475, text="Murphy?", font=('Times', 12))
+            canvas.create_text(585, 475, text="Log Off", font=('Times', 12))
+            canvas.create_text(680, 475, text="Store", font=('Times', 12))
+            canvas.create_text(390, 475, text="Instructions", font=('Times', 12))
+            canvas.create_text(300, 475, text="Resign", font=('Times', 12))
+            canvas.create_text(200, 475, text="Rules", font=('Times', 12))
+            canvas.create_image(680, 355, image=whited)
+            canvas.create_text(680, 355, text="Donate Money to Another Player", font=('Times', 12), fill='white')
+            canvas.create_image(680, 240, image=whitea)
+            canvas.create_text(680, 240, text="Accessories", font=('Times', 12), fill='white')
+            if details["f1"] == 'y':
+                frame = f1p
+            elif details["f2"] == 'y':
+                frame = f2p
+            elif details["f3"] == 'y':
+                frame = f3p
+            else:
+                details["new"] = True
+                z = randint(1, 3)
+                y = str('f') + str(z)
+                details[y] = 'y'
+                drawroomt(x)
+                return None
+            y = x
+            canvas.create_image(680, 70, image=frame)
+            canvas.create_image(680, 185, image=frame)
+            canvas.create_text(680, 50, text="Money:", font=('Times', 18))
+            temp["money"] = canvas.create_text(680, 70, text=details["money"], font=('Times', 14))
+            canvas.create_text(680, 165, text="Lives:", font=('Times', 18))
+            canvas.create_text(680, 185, text=details["lives"], font=('Times', 14))
+            if details["person"] == True:
+                canvas.create_image(100, 600, image=person, anchor=S)
+            if details["new"] == True:
+                x = simpledialog.askstring("Welcome!", '''Welcome to your Kingdom! You are now the
+Ruler of a vast land. I am your advisor,
+Murphy Robertson! Your Kingdom is not yet
+named. What is your Kingdom's name?''')
+                if x == None:
+                    resetdetail()
+                    drawmain()
+                    return None
+                details["user"] = x
+                y = messagebox.askyesno("Rules", "Before you start, please read the rules of the game.")
+                if y == True:
+                    showrules()
+                messagebox.showinfo("Instructions", "You are probably wondering what to do next. Click the button at the bottom of the screen labeled \"Instructions\" to learn how to play.")
+                if uname()[0] == 'Linux':
+                    user = getuser()
+                    initit = str('/home/') + str(user) + str('/Public/uthronium/') + str(details["user"]) + str('.utr')
+                else:
+                    if debug["os"] == True:
+                        initit = str("C:\\Documents and settings\\all users\\Documents\\uthronium\\") + str(details["user"]) + str('.utr')
+                    else:
+                        initit = str("C:\\users\\public\\Documents\\uthronium\\") + str(details["user"]) + str('.utr')
+                temp["user"] = initit
+            else:
+                if x == True:
+                    messagebox.showinfo("Welcome!", "Welcome back to your kingdom!")
+            details["new"] = False
+            canvas.create_text(0, 0, anchor=NW, text="Throne Room of %s" % details["user"], font=('Times', 36), fill='red')
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def guesta():
+    x = messagebox.askyesno("Confirmation Recquired", "Are you sure? Changes cannot be saved in the Guest account!")
+    if x:
+        drawroomt(False)
+def drawroomf():
+    drawroomt(None)
+def drawmain():
+    try:
+        drawcan()
+        statusbar("Drawing Login Screen")
+        status('draw.login')
+        canvas.create_image(0, 0, anchor=NW, image=my)
+        login = Button(root, text="Login", command=load_kingdom)
+        login.place(relx=.4, rely=.4)
+        new = Button(root, text="Create New Kingdom", command=create_king)
+        new.place(relx=.5, rely=.4)
+        i = Button(root, image=ins, command=instruct)
+        i.place(relx=.0, rely=.0, anchor=NW)
+        canvas.create_text(100, 0, anchor=NW, text="< Instructions", font=('Times', 36), fill='brown')
+        canvas.create_text(400, 150, text="uThronium Login Screen", font=('Times', 48), fill='brown')
+        r = Button(root, image=rule, command=showrules)
+        r.place(relx=.0, rely=.968, anchor=SW)
+        canvas.create_text(100, 580, anchor=SW, text="< Rules", font=('Times', 36), fill='brown')
+        a = Button(root, image=accp, command=aboutit)
+        a.place(relx=.999, rely=.968, anchor=SE)
+        canvas.create_text(700, 580, anchor=SE, text="About >", font=('Times', 36), fill='brown')
+        canvas.create_text(700, 0, anchor=NE, text="Guest? >", font=('Times', 36), fill='brown')
+        gb = Button(root, image=g, command=guesta)
+        gb.place(relx=.999, rely=.0, anchor=NE)
+    except Exception as err:
+        er("Error: {0}" .format(err))
+
+def killme2():
+    try:
+        status('killme2')
+        x = randint(0, 100)
+        if x > 70 and details["kill2"] == True:
+            messagebox.showwarning("Death Alert", "Remember how earlier you declined to replace the carbon manoxide alarms? Well, the heating system doesn't seem to be working and I feel a bit drowsy..............................")
+            exit_save_death()
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def ex():
+    root.destroy()
+def drawtr(x):
+    try:
+        status('drawtr')
+        y = False
+        for z in range(0, 7):
+            if details[str('tr') + str(z)] == 'y':
+                y = True
+        temp["room"] = y
+        #This to make background image
+        canvas.create_image(0, 0, anchor=NW, image=x)
+    except Exception as err:
+        er("Error: {0}" .format(err))
+def drawroom323():
+    status('drawroom323')
+    if debug["status"] != 'color':
+        drawroom()
+    else:
+        statusbar('Waiting for password...')
+        messagebox.showerror("Enter Password", "Please enter your color password and press \"Go\".")
+def resetdetail():
+    #reset details map to original state
+    try:
+        details["money"] = 0
+        details["lives"] = 1
+        details["user"] = None
+        details["tr0"] = False
+        details["tr1"] = False
+        details["tr2"] = False
+        details["tr3"] = False
+        details["tr4"] = False
+        details["tr5"] = False
+        details["tr6"] = False
+        details["person"] = False
+        details["f1"] = False
+        details["f2"] = False
+        details["f3"] = False
+        details["kill"] = False
+        details["kill2"] = False
+        details["pass"] = None
+        details["colorpass"] = None
+        details["new"] = False
+    except Exception as err:
+        er("Error: {0}" .format(err))
+if 1:
+#try:
+    global heythere
+    heythere = 0
+    #defining details and debug maps
+    details = {
+    "money" : 0,
+    "lives" : 1,
+    "user" : None,
+    "time" : None,
+    "tr0" : False,
+    "tr1" : False,
+    "tr2" : False,
+    "tr3" : False,
+    "tr4" : False,
+    "tr5" : False,
+    "tr6" : False,
+    "person" : False,
+    "f1" : False,
+    "f2" : False,
+    "f3" : False,
+    "kill1" : False,
+    "kill2" : False,
+    "pass" : None,
+    "colorpass" : None,
+    "new" : False,
+    "murph" : 0
+    }
+    debug = {
+    "status" : "load.modules",
+    "answer" : None,
+    "os" : None,
+    "bit" : None,
+    "version" : 0.0
+    }
+    passtemp = {
+    "setup" : None,
+    "pass" : "",
+    "colors" : ""
+    }
+    #importing modules and commands
+    from getpass import getuser
+    import turtle
+    from os import makedirs, system, execl
+    from time import asctime, sleep, localtime, time
+    from random import randint, shuffle
+    status('tkinter')
+    from tkinter import *
+    from tkinter import messagebox, filedialog, simpledialog
+    from tkinter.filedialog import askopenfilename
+    import sys
+    import os.path
+    from platform import uname
+    status('pickle')
+    import pickle
+    status("load.window")
+    root = Tk()
+    root.update()
+    root.update_idletasks()
+    w = 800
+    h = 620
+    if uname()[0] == 'Linux':
+        h = 600
+    ws = root.winfo_screenwidth()
+    hs = root.winfo_screenheight()
+    x = (ws/2) - (w/2)
+    y = (hs/2) - (h/2) - 32
+    root.geometry('%dx%d+%d+%d' % (w, h, x, y))
+    root.title("uThronium - Version 1.0.A")
+    root.resizable(0, 0)
+    def drawcan():
+        canvas.destroy()
+        firstdrawcan()
+    def firstdrawcan():
+        status('draw')
+        global canvas
+        canvas = Canvas(root, width=800, height=600, bd=0, highlightthickness=0)
+        canvas.pack()
+        canvas.create_text(400, 300, text="Loading...", font=('Times', 72))
+    def newinhere():
+        messagebox.showinfo("New In This Version", '''New In This Version of uThronium:''')
+    def cheatcall(event):
+        sprint(event)
+        if debug["status"] != 'color' and debug["status"] != 'pass':
+            cheat()
+        else:
+            messagebox.showerror("Enter Password", "The cheat box cannot be opened while entering a password.")
+    firstdrawcan()
+    statusb = Label(root, text="status bar", bd=1, relief=SUNKEN, anchor=W)
+    menu = Menu(root)
+    root.config(menu=menu)
+    filemenu = Menu(menu)
+    menu.add_cascade(label="File", menu=filemenu)
+    filemenu.add_command(label="New...Ctrl+N", command=create_king)
+    filemenu.add_command(label="Open...Ctrl+O", command=load_kingdom)
+    filemenu.add_command(label="Save...Ctrl+S", command=exit_save)
+    filemenu.add_separator()
+    actionmenu = Menu(menu)
+    menu.add_cascade(label="Action", menu=actionmenu)
+    actionmenu.add_command(label="What's Up, Murphy?...Ctrl+Alt+M", command=randmurph)
+    actionmenu.add_separator()
+    actionmenu.add_command(label="War Mode...Ctrl+Alt+W", command=warm)
+    actionmenu.add_command(label="Spy Mode...Ctrl+Alt+S", command=spy)
+    placemenu = Menu(menu)
+    menu.add_cascade(label="Go To", menu=placemenu)
+    placemenu.add_command(label="Store...Alt+S", command=drawstore)
+    placemenu.add_command(label="Accessories...Alt+A", command=drawacc)
+    placemenu.add_separator()
+    placemenu.add_command(label="Throne Room...Alt+T", command=drawroom323)
+    placemenu.add_command(label="Login Screen...Alt+L", command=drawmain)
+    filemenu.add_command(label="Exit...Alt+F4", command=ex)
+    helpmenu = Menu(menu)
+    menu.add_cascade(label="Help", menu=helpmenu)
+    helpmenu.add_command(label="New In This Version...F3", command=newinhere)
+    helpmenu.add_separator()
+    helpmenu.add_command(label="Instructions...F1", command=instruct)
+    helpmenu.add_command(label="About...F2", command=aboutit)
+    status('setup')
+    setup()
+    if setu == True:
+        #Comment below line when compiling with cx_Freeze
+        debug["bit"] = None
+        status('load.pics')
+        statusbar('Loading images...')
+        if uname()[0] != 'Linux':
+            if debug["bit"] == None:
+                root.iconbitmap(default='uthronium.ico')
+                bit = ""
+            elif debug["bit"] == True:
+                root.iconbitmap(default='C:\\program files\\uthronium final preview\\uthronium.ico')
+                bit= "C:\\program files\\uthronium final preview\\"
+            else:
+                root.iconbitmap(default='C:\\program files (x86)\\uthronium final preview\\uthronium.ico')
+                bit= "C:\\program files (x86)\\uthronium final preview\\"
+            if debug["bit"] == None:
+                abc = ""
+            elif debug["bit"] == True:
+                abc = "C:\\program files\\uthronium final preview\\"
+            else:
+                abc = "C:\\program files (x86)\\uthronium final preview\\"
+            b64 = open(str(abc) + str('photos.dat'), 'rb')
+            b64 = pickle.load(b64)
+            my = PhotoImage(data=b64["main"])
+            wumb = PhotoImage(data=b64["wum"])
+            lo2 = PhotoImage(data=b64["lo"])
+            s = PhotoImage(data=b64["store"])
+            tr1f = PhotoImage(data=b64["tr1f"])
+            tr0f = PhotoImage(data=b64["tr0f"])
+            tr2f = PhotoImage(data=b64["tr2f"])
+            tr3f = PhotoImage(data=b64["tr3f"])
+            tr4f = PhotoImage(data=b64["tr4f"])
+            tr5f = PhotoImage(data=b64["tr5f"])
+            tr6f = PhotoImage(data=b64["tr6f"])
+            ins = PhotoImage(data=b64["ins"])
+            resign = PhotoImage(data=b64["resign"])
+            rule = PhotoImage(data=b64["rule"])
+            don = PhotoImage(data=b64["don"])
+            accp = PhotoImage(data=b64["accp"])
+            storeb = PhotoImage(data=b64["storeb"])
+            trprev = PhotoImage(data=b64["trprev"])
+            puz = PhotoImage(data=b64["puz"])
+            f1 = PhotoImage(data=b64["f1"])
+            f2 = PhotoImage(data=b64["f2"])
+            f3 = PhotoImage(data=b64["f3"])
+            fprev = f3
+            other = PhotoImage(data=b64["other"])
+            fp5 = trprev
+            fp0 = PhotoImage(data=b64["fp0"])
+            fp1 = PhotoImage(data=b64["fp1"])
+            fp2 = PhotoImage(data=b64["fp2"])
+            fp3 = PhotoImage(data=b64["fp3"])
+            fp4 = PhotoImage(data=b64["fp4"])
+            fp6 = PhotoImage(data=b64["fp6"])
+            f1p = f1
+            f2p = f2
+            f3p = f3
+            whitespace_room = PhotoImage(data=b64["whitespace_room"])
+            whited = PhotoImage(data=b64["whited"])
+            whitea = PhotoImage(data=b64["whitea"])
+            g = PhotoImage(data=b64["g"])
+            whitespaceb = PhotoImage(data=b64["whitespaceb"])
+            bspace2 = PhotoImage(data=b64["bspace2"])
+            c_1 = PhotoImage(data=b64["c_1"])
+            c_2 = PhotoImage(data=b64["c_2"])
+            c_3 = PhotoImage(data=b64["c_3"])
+            c_4 = PhotoImage(data=b64["c_4"])
+            c_5 = PhotoImage(data=b64["c_5"])
+            c_6 = PhotoImage(data=b64["c_6"])
+            c_7 = PhotoImage(data=b64["c_7"])
+            c_8 = PhotoImage(data=b64["c_8"])
+            c_9 = PhotoImage(data=b64["c_9"])
+            person = PhotoImage(data=b64["person"])
+            personprev = PhotoImage(data=b64["personprev"])
+            desk = PhotoImage(data=b64["frontd"])
+            war = PhotoImage(data=b64["warback"])
+        else:
+            debug["bit"] = None
+            abc = ""
+            b64 = open(str(abc) + str('photos.dat'), 'rb')
+            b64 = pickle.load(b64)
+            my = PhotoImage(data=b64["main"])
+            wumb = PhotoImage(data=b64["wum"])
+            lo2 = PhotoImage(data=b64["lo"])
+            s = PhotoImage(data=b64["store"])
+            tr1f = PhotoImage(data=b64["tr1f"])
+            tr0f = PhotoImage(data=b64["tr0f"])
+            tr2f = PhotoImage(data=b64["tr2f"])
+            tr3f = PhotoImage(data=b64["tr3f"])
+            tr4f = PhotoImage(data=b64["tr4f"])
+            tr5f = PhotoImage(data=b64["tr5f"])
+            tr6f = PhotoImage(data=b64["tr6f"])
+            ins = PhotoImage(data=b64["ins"])
+            resign = PhotoImage(data=b64["resign"])
+            rule = PhotoImage(data=b64["rule"])
+            don = PhotoImage(data=b64["don"])
+            accp = PhotoImage(data=b64["accp"])
+            storeb = PhotoImage(data=b64["storeb"])
+            trprev = PhotoImage(data=b64["trprev"])
+            puz = PhotoImage(data=b64["puz"])
+            f1 = PhotoImage(data=b64["f1"])
+            f2 = PhotoImage(data=b64["f2"])
+            f3 = PhotoImage(data=b64["f3"])
+            fprev = f3
+            other = PhotoImage(data=b64["other"])
+            fp5 = trprev
+            fp0 = PhotoImage(data=b64["fp0"])
+            fp1 = PhotoImage(data=b64["fp1"])
+            fp2 = PhotoImage(data=b64["fp2"])
+            fp3 = PhotoImage(data=b64["fp3"])
+            fp4 = PhotoImage(data=b64["fp4"])
+            fp6 = PhotoImage(data=b64["fp6"])
+            f1p = f1
+            f2p = f2
+            f3p = f3
+            whitespace_room = PhotoImage(data=b64["whitespace_room"])
+            whited = PhotoImage(data=b64["whited"])
+            whitea = PhotoImage(data=b64["whitea"])
+            g = PhotoImage(data=b64["g"])
+            whitespaceb = PhotoImage(data=b64["whitespaceb"])
+            bspace2 = PhotoImage(data=b64["bspace2"])
+            c_1 = PhotoImage(data=b64["c_1"])
+            c_2 = PhotoImage(data=b64["c_2"])
+            c_3 = PhotoImage(data=b64["c_3"])
+            c_4 = PhotoImage(data=b64["c_4"])
+            c_5 = PhotoImage(data=b64["c_5"])
+            c_6 = PhotoImage(data=b64["c_6"])
+            c_7 = PhotoImage(data=b64["c_7"])
+            c_8 = PhotoImage(data=b64["c_8"])
+            c_9 = PhotoImage(data=b64["c_9"])
+            person = PhotoImage(data=b64["person"])
+            personprev = PhotoImage(data=b64["personprev"])
+            desk = PhotoImage(data=b64["frontd"])
+            war = PhotoImage(data=b64["warback"])
+        drawmain()
+        statusbar("Welcome to uThronium!")
+        def create_king_k(s):
+            create_king()
+        def load_kingdom_k(s):
+            load_kingdom()
+        def exit_save_k(s):
+            exit_save()
+        def drawstore_k(s):
+            drawstore()
+        def drawacc_k(s):
+            drawacc()
+        def drawroom_k(s):
+            drawroom323()
+        def drawmain_k(s):
+            drawmain()
+        def randmurph_k(s):
+            randmurph()
+        def warm_k(s):
+            sprint('warm')
+            warm()
+        def spy_k(s):
+            spy()
+        def instruct_k(s):
+            instruct()
+        def aboutit_k(s):
+            aboutit()
+        def newinhere_k(s):
+            newinhere()
+        canvas.bind_all('<Control-A>', cheatcall)
+        canvas.bind_all('<Control-N>', create_king_k)
+        canvas.bind_all('<Control-n>', create_king_k)
+        canvas.bind_all('<Control-O>', load_kingdom_k)
+        canvas.bind_all('<Control-o>', load_kingdom_k)
+        canvas.bind_all('<Control-S>', exit_save_k)
+        canvas.bind_all('<Control-s>', exit_save_k)
+        canvas.bind_all('<Alt-S>', drawstore_k)
+        canvas.bind_all('<Alt-s>', drawstore_k)
+        canvas.bind_all('<Alt-A>', drawacc_k)
+        canvas.bind_all('<Alt-a>', drawacc_k)
+        canvas.bind_all('<Alt-T>', drawroom_k)
+        canvas.bind_all('<Alt-t>', drawroom_k)
+        canvas.bind_all('<Alt-L>', drawmain_k)
+        canvas.bind_all('<Alt-l>', drawmain_k)
+        canvas.bind_all('<Control-Alt-M>', randmurph_k)
+        canvas.bind_all('<Control-Alt-m>', randmurph_k)
+        canvas.bind_all('<Control-Alt-W>', warm_k)
+        canvas.bind_all('<Control-Alt-w>', warm_k)
+        canvas.bind_all('<Control-Alt-S>', spy_k)
+        canvas.bind_all('<Control-Alt-s>', spy_k)
+        canvas.bind_all('<F1>', instruct_k)
+        canvas.bind_all('<F2>', aboutit_k)
+        canvas.bind_all('<F3>', newinhere_k)
+        temp = {
+            'guest' : False,
+            'shutdown' : False,
+            'user' : None,
+            'money' : None,
+            'room' : False
+            }
+        root.protocol('WM_DELETE_WINDOW', closewin)
+        root.mainloop()
+    else:
+        root.destroy()
+try:
+    var = 1
+except Exception as err:
+    er("Error: {0}" .format(err))

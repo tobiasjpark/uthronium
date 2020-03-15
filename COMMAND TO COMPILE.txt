@@ -1,0 +1,9 @@
+run cmd as admin
+cd to uthronium directory
+Copy and paste the following:
+
+pyinstaller --windowed --icon uthronium.ico --name uThronium --noupx uthronium.pyw
+
+copy and paste the picture files into that directory
+
+done
